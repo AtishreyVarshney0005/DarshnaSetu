@@ -1,0 +1,967 @@
+/* =====================================================
+   DarshanSetu
+   COMPONENTS.CSS
+   Reusable UI Components
+===================================================== */
+
+
+/* =========================
+   CONTAINER
+========================= */
+
+.container {
+    width: min(1180px, 96%);
+    margin: 0 auto;
+}
+
+
+/* =========================
+   CARD
+========================= */
+
+.card {
+    background: #ffffff;
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+}
+
+.card-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid #eeeeee;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.card-body {
+    padding: 16px 18px;
+}
+
+
+/* =========================
+   BUTTONS
+========================= */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    padding: 10px 18px;
+
+    border-radius: 6px;
+    border: 1px solid transparent;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+.btn-primary {
+    background: #8d0610;
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background: #72040c;
+}
+
+.btn-secondary {
+    background: #f08a12;
+    color: #ffffff;
+}
+
+.btn-secondary:hover {
+    background: #d97500;
+}
+
+.btn-outline {
+    background: #ffffff;
+    color: #8d0610;
+    border-color: #8d0610;
+}
+
+.btn-outline:hover {
+    background: #fff5f5;
+}
+
+.btn-danger {
+    background: #df1c25;
+    color: #ffffff;
+}
+
+.btn-success {
+    background: #159447;
+    color: #ffffff;
+}
+
+.btn-full {
+    width: 100%;
+}
+
+
+/* =========================
+   STATUS BADGES
+========================= */
+
+.status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 4px 10px;
+
+    border-radius: 5px;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.status-green {
+    color: #14763b;
+    background: #e9f6ed;
+    border: 1px solid #b9e0c6;
+}
+
+.status-yellow {
+    color: #936000;
+    background: #fff5db;
+    border: 1px solid #efd79b;
+}
+
+.status-orange {
+    color: #b44c00;
+    background: #fff0e2;
+    border: 1px solid #f1c19a;
+}
+
+.status-red {
+    color: #b40e16;
+    background: #ffe7e8;
+    border: 1px solid #efb1b5;
+}
+
+.status-gray {
+    color: #666666;
+    background: #f0f0f0;
+    border: 1px solid #dddddd;
+}
+
+
+/* =========================
+   BADGE
+========================= */
+
+.badge {
+    display: inline-block;
+
+    padding: 4px 9px;
+
+    border-radius: 20px;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.badge-maroon {
+    background: #f8e8e9;
+    color: #8d0610;
+}
+
+.badge-gold {
+    background: #fff4d8;
+    color: #996b00;
+}
+
+.badge-green {
+    background: #e9f6ed;
+    color: #159447;
+}
+
+
+/* =========================
+   FORM ELEMENTS
+========================= */
+
+.form-group {
+    margin-bottom: 14px;
+}
+
+.form-label {
+    display: block;
+
+    margin-bottom: 6px;
+
+    font-size: 11px;
+    font-weight: 700;
+    color: #333333;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+    width: 100%;
+
+    padding: 10px 12px;
+
+    background: #ffffff;
+
+    border: 1px solid #dddddd;
+    border-radius: 6px;
+
+    outline: none;
+
+    font-size: 11px;
+
+    transition: border 0.2s ease;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    border-color: #8d0610;
+}
+
+.form-textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+
+/* =========================
+   KPI CARD
+========================= */
+
+.kpi-card {
+    position: relative;
+
+    padding: 14px;
+
+    min-height: 90px;
+
+    background: #ffffff;
+
+    border: 1px solid #e5e5e5;
+    border-radius: 9px;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.kpi-label {
+    font-size: 10px;
+    color: #555555;
+}
+
+.kpi-value {
+    margin-top: 4px;
+
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 1.1;
+}
+
+.kpi-subtitle {
+    margin-top: 5px;
+
+    font-size: 9px;
+    color: #777777;
+}
+
+.kpi-icon {
+    position: absolute;
+
+    right: 13px;
+    bottom: 13px;
+
+    width: 32px;
+    height: 32px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 7px;
+
+    background: #f8e8e9;
+    color: #8d0610;
+
+    font-size: 17px;
+}
+
+
+/* =========================
+   LIVE CROWD CARD
+========================= */
+
+.live-card {
+    padding: 13px;
+
+    min-height: 78px;
+
+    display: grid;
+    grid-template-columns: 1fr 35px;
+
+    align-items: center;
+}
+
+.live-label {
+    display: block;
+
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.live-number {
+    display: block;
+
+    margin: 3px 0;
+
+    font-size: 21px;
+    font-weight: 800;
+}
+
+.live-sub {
+    display: block;
+
+    font-size: 9px;
+    color: #777777;
+}
+
+.live-icon {
+    width: 32px;
+    height: 32px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 7px;
+
+    background: #f8e8e9;
+    color: #8d0610;
+}
+
+
+/* =========================
+   SECTION TITLE
+========================= */
+
+.section-title {
+    margin: 0 0 12px;
+
+    font-size: 18px;
+    font-weight: 800;
+
+    color: #5d2023;
+}
+
+.section-subtitle {
+    margin: -5px 0 15px;
+
+    font-size: 11px;
+    color: #666666;
+}
+
+
+/* =========================
+   ALERT
+========================= */
+
+.alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+
+    padding: 12px;
+
+    border-radius: 7px;
+
+    font-size: 11px;
+}
+
+.alert-warning {
+    background: #fff7df;
+    border: 1px solid #ecd48d;
+    color: #805b00;
+}
+
+.alert-danger {
+    background: #fff0f0;
+    border: 1px solid #e8b5b8;
+    color: #a70c13;
+}
+
+.alert-success {
+    background: #eef8f1;
+    border: 1px solid #b9dfc4;
+    color: #14763b;
+}
+
+.alert-info {
+    background: #eef6ff;
+    border: 1px solid #cfe2f8;
+    color: #285b8e;
+}
+
+
+/* =========================
+   PROGRESS BAR
+========================= */
+
+.progress {
+    width: 100%;
+    height: 10px;
+
+    overflow: hidden;
+
+    background: #e6e6e6;
+
+    border-radius: 20px;
+}
+
+.progress-bar {
+    height: 100%;
+
+    border-radius: 20px;
+
+    background: #159447;
+
+    transition: width 0.4s ease;
+}
+
+.progress-yellow {
+    background: #f3b51b;
+}
+
+.progress-orange {
+    background: #f47c00;
+}
+
+.progress-red {
+    background: #df1c25;
+}
+
+
+/* =========================
+   TABLE
+========================= */
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+
+    border-collapse: collapse;
+}
+
+.table th,
+.table td {
+    padding: 10px;
+
+    border-bottom: 1px solid #eeeeee;
+
+    text-align: left;
+
+    font-size: 10px;
+}
+
+.table th {
+    background: #fafafa;
+
+    font-weight: 700;
+}
+
+.table tr:hover {
+    background: #fffafa;
+}
+
+
+/* =========================
+   ICON BOX
+========================= */
+
+.icon-box {
+    width: 38px;
+    height: 38px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 8px;
+
+    background: #f8e8e9;
+    color: #8d0610;
+
+    font-size: 18px;
+}
+
+.icon-box.orange {
+    background: #fff1df;
+    color: #f08a12;
+}
+
+.icon-box.green {
+    background: #e9f6ed;
+    color: #159447;
+}
+
+.icon-box.blue {
+    background: #edf5ff;
+    color: #2475d0;
+}
+
+.icon-box.red {
+    background: #ffe7e8;
+    color: #df1c25;
+}
+
+
+/* =========================
+   STAT GRID
+========================= */
+
+.stat-grid {
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 10px;
+}
+
+.stat-box {
+    padding: 14px;
+
+    text-align: center;
+
+    border: 1px solid #eeeeee;
+    border-radius: 8px;
+}
+
+.stat-box label {
+    display: block;
+
+    font-size: 10px;
+    color: #666666;
+}
+
+.stat-box strong {
+    display: block;
+
+    margin-top: 5px;
+
+    font-size: 22px;
+    font-weight: 800;
+}
+
+
+/* =========================
+   ACTION LIST
+========================= */
+
+.action-list {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+.action-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    padding: 10px;
+
+    border: 1px solid #eeeeee;
+    border-radius: 7px;
+
+    font-size: 10px;
+}
+
+.action-check {
+    width: 22px;
+    height: 22px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 50%;
+
+    background: #e9f6ed;
+    color: #159447;
+
+    font-weight: 800;
+}
+
+
+/* =========================
+   SLOT CARD
+========================= */
+
+.slot-grid {
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 10px;
+}
+
+.slot-card {
+    padding: 12px;
+
+    text-align: center;
+
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.slot-card:hover {
+    border-color: #8d0610;
+}
+
+.slot-card.active {
+    border: 2px solid #8d0610;
+    background: #fff7f7;
+}
+
+.slot-time {
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.slot-available {
+    margin-top: 4px;
+
+    font-size: 9px;
+    color: #159447;
+}
+
+
+/* =========================
+   QUEUE CARD
+========================= */
+
+.queue-card {
+    padding: 18px;
+
+    text-align: center;
+
+    border: 1px solid #eeeeee;
+    border-radius: 9px;
+}
+
+.queue-label {
+    display: block;
+
+    font-size: 11px;
+    color: #555555;
+}
+
+.queue-value {
+    display: block;
+
+    margin-top: 5px;
+
+    font-size: 35px;
+    font-weight: 800;
+}
+
+.queue-maroon {
+    color: #8d0610;
+}
+
+
+/* =========================
+   EMERGENCY BUTTON
+========================= */
+
+.sos-button {
+    width: 100%;
+
+    padding: 13px;
+
+    background: #df1c25;
+
+    color: #ffffff;
+
+    border: none;
+    border-radius: 6px;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    cursor: pointer;
+}
+
+.sos-button:hover {
+    background: #bd1118;
+}
+
+
+/* =========================
+   EMERGENCY TYPE
+========================= */
+
+.emergency-types {
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 8px;
+}
+
+.emergency-type {
+    padding: 10px 5px;
+
+    text-align: center;
+
+    border: 1px solid #dddddd;
+    border-radius: 7px;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.emergency-type.active {
+    border: 2px solid #df1c25;
+
+    background: #fff5f5;
+
+    color: #a70c13;
+}
+
+.emergency-icon {
+    display: block;
+
+    margin-bottom: 4px;
+
+    font-size: 20px;
+}
+
+
+/* =========================
+   NOTIFICATION
+========================= */
+
+.notification-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.notification {
+    display: grid;
+
+    grid-template-columns: 40px 1fr auto;
+
+    gap: 12px;
+
+    align-items: center;
+
+    padding: 15px;
+
+    border-bottom: 1px solid #eeeeee;
+}
+
+.notification-icon {
+    width: 34px;
+    height: 34px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 50%;
+
+    background: #f8e8e9;
+    color: #8d0610;
+}
+
+.notification-title {
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.notification-text {
+    margin-top: 3px;
+
+    font-size: 10px;
+    color: #666666;
+}
+
+.notification-time {
+    font-size: 9px;
+    color: #777777;
+}
+
+
+/* =========================
+   PARKING CARD
+========================= */
+
+.parking-grid {
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 15px;
+}
+
+.parking-card {
+    padding: 16px;
+
+    border: 1px solid #a8d5b3;
+    border-radius: 9px;
+}
+
+.parking-name {
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.parking-number {
+    margin-top: 8px;
+
+    font-size: 25px;
+    font-weight: 800;
+}
+
+.parking-available {
+    font-size: 10px;
+    color: #159447;
+}
+
+
+/* =========================
+   CHART CONTAINER
+========================= */
+
+.chart-card {
+    padding: 14px;
+
+    min-height: 220px;
+
+    border: 1px solid #eeeeee;
+    border-radius: 9px;
+}
+
+.chart-title {
+    margin-bottom: 8px;
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+/* =========================
+   EMPTY STATE
+========================= */
+
+.empty-state {
+    padding: 40px 20px;
+
+    text-align: center;
+
+    color: #777777;
+}
+
+.empty-state-icon {
+    font-size: 35px;
+
+    margin-bottom: 8px;
+}
+
+.empty-state-title {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+
+/* =========================
+   DIVIDER
+========================= */
+
+.divider {
+    width: 100%;
+    height: 1px;
+
+    margin: 15px 0;
+
+    background: #eeeeee;
+}
+
+
+/* =========================
+   FLEX UTILITIES
+========================= */
+
+.flex {
+    display: flex;
+}
+
+.flex-center {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+}
+
+.flex-between {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+}
+
+.flex-gap {
+    gap: 10px;
+}
+
+
+/* =========================
+   TEXT UTILITIES
+========================= */
+
+.text-maroon {
+    color: #8d0610;
+}
+
+.text-saffron {
+    color: #f08a12;
+}
+
+.text-green {
+    color: #159447;
+}
+
+.text-red {
+    color: #df1c25;
+}
+
+.text-muted {
+    color: #666666;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.fw-bold {
+    font-weight: 700;
+}
+
+.fw-heavy {
+    font-weight: 800;
+}

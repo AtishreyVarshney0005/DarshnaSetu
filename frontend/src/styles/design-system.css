@@ -1,0 +1,417 @@
+:root {
+  --ds-red: #7b1018;
+  --ds-red-dark: #580b11;
+  --ds-red-soft: #f7e9e9;
+  --ds-ink: #252525;
+  --ds-muted: #6f7278;
+  --ds-line: #e1e4e8;
+  --ds-surface: #ffffff;
+  --ds-page: #f5f6f8;
+  --ds-green: #27834d;
+  --ds-orange: #c87516;
+  --ds-shadow: 0 2px 8px rgba(27, 35, 45, .06);
+}
+
+.dashboard-layout,
+.admin-page,
+.booking-app {
+  background: var(--ds-page) !important;
+  color: var(--ds-ink);
+}
+
+.dashboard-layout .sidebar,
+.admin-page .sidebar,
+.booking-app .booking-sidebar {
+  width: 224px;
+  flex-basis: 224px;
+  padding: 20px 12px 16px;
+  background: linear-gradient(180deg, var(--ds-red) 0%, var(--ds-red-dark) 100%);
+}
+
+.dashboard-layout .brand,
+.admin-page .brand {
+  padding: 2px 8px 20px;
+}
+
+.dashboard-layout .brand-logo,
+.admin-page .brand-logo {
+  width: 170px;
+  height: 48px;
+}
+
+.dashboard-layout .brand-logo img,
+.admin-page .brand-logo img {
+  height: 48px;
+}
+
+.dashboard-layout .sidebar-nav,
+.admin-page .sidebar-nav,
+.booking-app .booking-nav {
+  gap: 3px;
+}
+
+.dashboard-layout .sidebar-nav a,
+.admin-page .sidebar-nav a,
+.booking-app .booking-nav a,
+.booking-app .booking-nav button,
+.booking-app .sidebar-logout,
+.dashboard-layout .logout,
+.admin-page .logout {
+  min-height: 40px;
+  border-radius: 5px;
+  padding: 10px 12px;
+  color: rgba(255,255,255,.82);
+  font-size: 12px;
+}
+
+.dashboard-layout .sidebar-nav a:hover,
+.dashboard-layout .sidebar-nav a.active,
+.admin-page .sidebar-nav a:hover,
+.admin-page .sidebar-nav a.active,
+.booking-app .booking-nav .active,
+.booking-app .booking-nav button:hover,
+.booking-app .booking-nav a:hover {
+  color: #fff;
+  background: rgba(255,255,255,.16);
+}
+
+.dashboard-layout .dashboard-main,
+.admin-page .main-content {
+  background: var(--ds-page);
+}
+
+.dashboard-layout .dashboard-header,
+.admin-page .top-header,
+.booking-app .booking-topbar {
+  min-height: 70px;
+  padding: 14px 28px;
+  border-bottom: 1px solid var(--ds-line);
+  background: var(--ds-surface);
+}
+
+.dashboard-layout .temple-selector,
+.admin-page .temple-selector {
+  min-height: 38px;
+  border: 1px solid #d5d8dd;
+  border-radius: 4px;
+  padding: 0 12px;
+  color: var(--ds-ink);
+  background: #fff;
+  font-size: 12px;
+}
+
+.dashboard-layout .stats-grid,
+.admin-page .stats-grid {
+  gap: 12px;
+  padding: 20px 28px 12px;
+}
+
+.dashboard-layout .stat-card,
+.admin-page .stat-card,
+.dashboard-layout .panel,
+.admin-page .panel {
+  border: 1px solid var(--ds-line);
+  border-radius: 5px;
+  background: var(--ds-surface);
+  box-shadow: var(--ds-shadow);
+}
+
+.dashboard-layout .stat-card,
+.admin-page .stat-card {
+  min-height: 112px;
+  padding: 18px;
+}
+
+.dashboard-layout .stat-info span,
+.dashboard-layout .stat-info small,
+.admin-page .stat-content p,
+.admin-page .stat-content small {
+  color: var(--ds-muted);
+  font-size: 11px;
+}
+
+.dashboard-layout .stat-info strong,
+.admin-page .stat-content h2 {
+  margin: 7px 0 3px;
+  color: var(--ds-red-dark);
+  font-size: 25px;
+}
+
+.dashboard-layout .middle-grid,
+.dashboard-layout .bottom-grid,
+.admin-page .middle-grid,
+.admin-page .bottom-grid {
+  gap: 12px;
+  padding: 12px 28px 0;
+}
+
+.dashboard-layout .panel,
+.admin-page .panel {
+  padding: 18px;
+}
+
+.dashboard-layout .panel-header,
+.admin-page .panel h2,
+.admin-page .panel h3 {
+  color: var(--ds-ink);
+  font-size: 14px;
+}
+
+.dashboard-layout .panel-header h2 span,
+.admin-page .panel h2 span,
+.admin-page .panel h3 span {
+  color: var(--ds-muted);
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.dashboard-layout .execute-btn,
+.admin-page .execute-btn,
+.booking-app .primary-cta,
+.booking-app .temple-card button {
+  border-radius: 4px;
+  background: var(--ds-red);
+}
+
+.dashboard-layout .execute-btn:hover,
+.admin-page .execute-btn:hover,
+.booking-app .primary-cta:hover,
+.booking-app .temple-card button:hover {
+  background: var(--ds-red-dark);
+}
+
+.booking-app {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.booking-app .booking-sidebar {
+  padding-top: 20px;
+}
+
+.booking-app .booking-brand {
+  padding: 0 10px 25px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 17px;
+}
+
+.booking-app .booking-logo {
+  width: 45px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.booking-app .booking-temple-selector {
+  min-height: 36px;
+  max-width: 220px;
+  border: 1px solid #d5d8dd;
+  border-radius: 4px;
+  padding: 0 9px;
+  color: var(--ds-ink);
+  background: #fff;
+  font-size: 11px;
+}
+
+.booking-app .booking-main {
+  padding: 22px 30px 48px;
+}
+
+.booking-app .booking-topbar h1,
+.booking-app .view-intro h2,
+.booking-app .selected-temple h2,
+.booking-app .section-title h2,
+.booking-app .details-panel h2,
+.booking-app .temple-info h3,
+.booking-app .summary-panel h3,
+.booking-app .confirmation-heading h2,
+.booking-app .pass-details h3,
+.booking-app .temple-card h3 {
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--ds-red-dark);
+}
+
+.booking-app .booking-topbar h1 {
+  font-size: 25px;
+}
+
+.booking-app .booking-topbar h1::after {
+  content: "Manage and book darshan slots for devotees";
+  display: block;
+  margin-top: 6px;
+  color: var(--ds-muted);
+  font: 400 12px Arial, Helvetica, sans-serif;
+}
+
+.booking-app .booking-topbar,
+.booking-app .view-intro {
+  margin-bottom: 22px;
+}
+
+.booking-app .temple-card,
+.booking-app .slot-panel,
+.booking-app .temple-info,
+.booking-app .details-panel,
+.booking-app .summary-panel,
+.booking-app .pass-card {
+  border-radius: 5px;
+  border-color: var(--ds-line);
+  box-shadow: var(--ds-shadow);
+}
+
+.booking-app .temple-image {
+  height: 118px;
+}
+
+.booking-app .temple-card h3 {
+  font-size: 16px;
+}
+
+.booking-app .date-strip button,
+.booking-app .slot-option,
+.booking-app .form-grid input,
+.booking-app .form-grid select,
+.booking-app .form-grid textarea,
+.booking-app .darshan-row select,
+.booking-app .darshan-row input {
+  border-radius: 4px;
+  border-color: #d5d8dd;
+}
+
+.booking-app .date-strip button.selected,
+.booking-app .flow-progress .current b,
+.booking-app .flow-progress .done b,
+.booking-app .slot-option.selected {
+  border-color: var(--ds-red);
+  background: var(--ds-red);
+}
+
+.booking-app .slot-option.selected {
+  color: #fff;
+}
+
+.booking-app .slot-option.selected strong,
+.booking-app .slot-option.selected small {
+  color: rgba(255,255,255,.85);
+}
+
+.booking-app .slot-option.full strong {
+  color: #b43737;
+}
+
+.qr-page {
+  min-height: 100vh;
+  padding: 28px 34px 50px;
+  background: var(--ds-page);
+  color: var(--ds-ink);
+}
+
+.qr-page .page-title {
+  color: var(--ds-red-dark);
+  font-size: 26px;
+}
+
+.qr-page .qr-container,
+.qr-page .booking-card,
+.qr-page .booking-success {
+  border-radius: 5px;
+  border-color: var(--ds-line);
+  box-shadow: var(--ds-shadow);
+}
+
+.qr-page .booking-list {
+  display: grid;
+  gap: 8px;
+}
+
+.qr-page .booking-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 17px 20px;
+  background: #fff;
+}
+
+.qr-page .booking-card h2 {
+  color: var(--ds-red-dark);
+  font-size: 16px;
+}
+
+.qr-page .booking-card-actions button,
+.qr-page .booking-success > a {
+  border-radius: 4px;
+  border: 1px solid var(--ds-red);
+  padding: 9px 12px;
+  color: #fff;
+  background: var(--ds-red);
+  text-decoration: none;
+}
+
+@media (max-width: 900px) {
+  .dashboard-layout .sidebar,
+  .admin-page .sidebar,
+  .booking-app .booking-sidebar {
+    width: 190px;
+    flex-basis: 190px;
+  }
+
+  .dashboard-layout .dashboard-header,
+  .admin-page .top-header,
+  .booking-app .booking-topbar {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+@media (max-width: 700px) {
+  .dashboard-layout,
+  .admin-page {
+    display: block;
+  }
+
+  .dashboard-layout .sidebar,
+  .admin-page .sidebar {
+    width: 100%;
+    min-height: auto;
+    position: relative;
+  }
+
+  .dashboard-layout .sidebar-nav,
+  .admin-page .sidebar-nav {
+    display: flex;
+    overflow-x: auto;
+  }
+
+  .dashboard-layout .sidebar-nav a,
+  .admin-page .sidebar-nav a {
+    flex: 0 0 auto;
+  }
+
+  .dashboard-layout .stats-grid,
+  .admin-page .stats-grid,
+  .dashboard-layout .middle-grid,
+  .dashboard-layout .bottom-grid,
+  .admin-page .middle-grid,
+  .admin-page .bottom-grid {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .booking-app .booking-sidebar {
+    width: 100%;
+    flex-basis: auto;
+    min-height: auto;
+  }
+
+  .booking-app .booking-main,
+  .qr-page {
+    padding: 18px 14px 35px;
+  }
+
+  .booking-app .booking-temple-selector {
+    display: none;
+  }
+
+  .qr-page .booking-card {
+    display: grid;
+    gap: 14px;
+  }
+}

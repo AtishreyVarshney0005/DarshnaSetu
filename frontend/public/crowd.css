@@ -1,0 +1,646 @@
+/* =========================================================
+   DarshanSetu
+   CROWD / TEMPLE MAP PAGE
+========================================================= */
+
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.crowd-page {
+
+    width: 100%;
+
+    min-height: 100vh;
+
+    padding: 18px 20px 22px;
+
+    box-sizing: border-box;
+
+    background: #ffffff;
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    color: #222222;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.crowd-header {
+
+    width: 100%;
+
+    height: 48px;
+
+    display: flex;
+
+    align-items: center;
+
+    margin-bottom: 12px;
+}
+
+
+/* =========================================================
+   TEMPLE MAP SELECTOR
+========================================================= */
+
+.map-selector {
+
+    height: 46px;
+
+    min-width: 275px;
+
+    padding: 0 16px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    border: none;
+
+    border-radius: 9px;
+
+    background: linear-gradient(
+        135deg,
+        #720000,
+        #950000
+    );
+
+    color: #ffffff;
+
+    font-size: 17px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+
+.map-icon {
+
+    font-size: 21px;
+
+    line-height: 1;
+}
+
+
+.selector-arrow {
+
+    margin-left: auto;
+
+    font-size: 20px;
+
+    line-height: 1;
+}
+
+
+/* =========================================================
+   TEMPLE MAP
+========================================================= */
+
+.temple-map {
+
+    width: 100%;
+
+    border-radius: 12px;
+
+    overflow: hidden;
+
+    border: 1px solid #dedede;
+
+    background: #e9dfc9;
+
+    line-height: 0;
+
+    box-shadow:
+        0 2px 7px rgba(0, 0, 0, 0.08);
+}
+
+
+.temple-map img {
+
+    display: block;
+
+    width: 100%;
+
+    height: auto;
+
+    max-height: 510px;
+
+    object-fit: contain;
+}
+
+
+/* =========================================================
+   LEGEND
+========================================================= */
+
+.map-legend {
+
+    width: 100%;
+
+    min-height: 58px;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    align-items: center;
+
+    box-sizing: border-box;
+
+    padding: 8px 25px;
+
+    border-left: 1px solid #eeeeee;
+
+    border-right: 1px solid #eeeeee;
+
+    border-bottom: 1px solid #eeeeee;
+
+    border-radius:
+        0 0 10px 10px;
+
+    background: #ffffff;
+}
+
+
+.legend-item {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    font-size: 13px;
+
+    color: #222222;
+
+    white-space: nowrap;
+}
+
+
+.legend-item strong {
+
+    font-size: 13px;
+}
+
+
+.legend-color {
+
+    width: 17px;
+
+    height: 17px;
+
+    display: inline-block;
+
+    border-radius: 1px;
+}
+
+
+.legend-color.safe {
+
+    background: #5d963f;
+}
+
+
+.legend-color.moderate {
+
+    background: #f5ad16;
+}
+
+
+.legend-color.high {
+
+    background: #f47d08;
+}
+
+
+.legend-color.critical {
+
+    background: #d92323;
+}
+
+
+/* =========================================================
+   SELECTED ZONE CARD
+========================================================= */
+
+.selected-zone {
+
+    width: 100%;
+
+    margin-top: 14px;
+
+    padding: 17px 20px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #dddddd;
+
+    border-radius: 12px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+
+/* =========================================================
+   SELECTED ZONE TITLE
+========================================================= */
+
+.selected-zone-title {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    margin-bottom: 15px;
+
+    font-size: 16px;
+
+    font-weight: 600;
+}
+
+
+.selected-zone-title strong {
+
+    color: #d12525;
+
+    font-size: 20px;
+}
+
+
+.danger-icon {
+
+    color: #ed3c1f;
+
+    font-size: 18px;
+
+    margin-left: 1px;
+}
+
+
+/* =========================================================
+   DETAILS GRID
+========================================================= */
+
+.zone-details {
+
+    display: grid;
+
+    grid-template-columns:
+        1.15fr
+        1.15fr
+        1.15fr
+        1.1fr
+        1.15fr
+        1.15fr
+        2.2fr
+        155px;
+
+    align-items: center;
+
+    min-height: 72px;
+}
+
+
+/* =========================================================
+   DETAIL ITEMS
+========================================================= */
+
+.detail-item {
+
+    min-height: 60px;
+
+    padding: 0 17px;
+
+    box-sizing: border-box;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    gap: 6px;
+
+    border-right: 1px solid #e2e2e2;
+}
+
+
+.detail-label {
+
+    font-size: 11px;
+
+    color: #333333;
+
+    white-space: nowrap;
+}
+
+
+.detail-item strong {
+
+    font-size: 18px;
+
+    font-weight: 700;
+
+    color: #222222;
+}
+
+
+/* =========================================================
+   CROWD VALUE
+========================================================= */
+
+.crowd-value {
+
+    color: #d02525 !important;
+}
+
+
+/* =========================================================
+   OCCUPANCY
+========================================================= */
+
+.occupancy-value {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+}
+
+
+.occupancy-value strong {
+
+    color: #d02525;
+}
+
+
+.occupancy-circle {
+
+    width: 24px;
+
+    height: 24px;
+
+    border-radius: 50%;
+
+    display: inline-block;
+
+    box-sizing: border-box;
+
+    border: 5px solid #d02525;
+
+    border-left-color: #dddddd;
+
+    transform: rotate(-45deg);
+}
+
+
+/* =========================================================
+   RISK
+========================================================= */
+
+.risk-value {
+
+    color: #d02525 !important;
+}
+
+
+/* =========================================================
+   RECOMMENDATION
+========================================================= */
+
+.recommendation {
+
+    border-right: none;
+}
+
+
+.recommendation strong {
+
+    font-size: 16px;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   VIEW DETAILS
+========================================================= */
+
+.view-details-container {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    padding-left: 10px;
+}
+
+
+.view-details {
+
+    width: 132px;
+
+    height: 39px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 13px;
+
+    border: none;
+
+    border-radius: 7px;
+
+    background: linear-gradient(
+        135deg,
+        #720000,
+        #920000
+    );
+
+    color: #ffffff;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+
+.view-details span {
+
+    font-size: 22px;
+
+    line-height: 1;
+}
+
+
+.view-details:hover {
+
+    background: linear-gradient(
+        135deg,
+        #620000,
+        #810000
+    );
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1200px) {
+
+    .zone-details {
+
+        grid-template-columns:
+            repeat(4, 1fr);
+    }
+
+    .recommendation {
+
+        border-right: none;
+    }
+
+    .view-details-container {
+
+        grid-column: span 4;
+
+        justify-content: flex-end;
+
+        padding-top: 10px;
+    }
+
+    .selected-zone {
+
+        padding-bottom: 20px;
+    }
+}
+
+
+@media (max-width: 800px) {
+
+    .crowd-page {
+
+        padding: 12px;
+    }
+
+    .map-selector {
+
+        min-width: 240px;
+
+        font-size: 15px;
+    }
+
+    .map-legend {
+
+        grid-template-columns: 1fr 1fr;
+
+        gap: 12px;
+
+        padding: 12px;
+    }
+
+    .zone-details {
+
+        grid-template-columns:
+            1fr 1fr;
+    }
+
+    .detail-item {
+
+        border-right: none;
+
+        border-bottom: 1px solid #eeeeee;
+
+        padding: 12px;
+    }
+
+    .recommendation {
+
+        grid-column: span 2;
+    }
+
+    .view-details-container {
+
+        grid-column: span 2;
+
+        justify-content: flex-end;
+    }
+}
+
+
+@media (max-width: 500px) {
+
+    .crowd-header {
+
+        height: auto;
+    }
+
+    .map-selector {
+
+        width: 100%;
+
+        min-width: 0;
+    }
+
+    .map-legend {
+
+        grid-template-columns: 1fr;
+    }
+
+    .legend-item {
+
+        justify-content: flex-start;
+    }
+
+    .zone-details {
+
+        grid-template-columns: 1fr;
+    }
+
+    .recommendation {
+
+        grid-column: auto;
+    }
+
+    .view-details-container {
+
+        grid-column: auto;
+
+        justify-content: flex-start;
+
+        padding-top: 12px;
+    }
+
+    .recommendation strong {
+
+        white-space: normal;
+    }
+}

@@ -1,0 +1,645 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+body {
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background: #ffffff;
+
+    color: #222222;
+
+    min-height: 100vh;
+}
+
+.qr-page {
+
+    width: 100%;
+
+    min-height: 100vh;
+
+    padding: 22px 16px 30px;
+}
+
+
+.page-title {
+
+    font-size: 28px;
+
+    font-weight: 800;
+
+    color: #151515;
+
+    margin-bottom: 12px;
+
+    letter-spacing: 0.2px;
+}
+
+.qr-container {
+
+    width: 100%;
+
+    border: 1px solid #dddddd;
+
+    border-radius: 12px;
+
+    background: #ffffff;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 2px 7px rgba(0, 0, 0, 0.05);
+}
+
+.qr-header {
+
+    height: 59px;
+
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 0 30px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #700000,
+            #900000
+        );
+
+    color: #ffffff;
+
+    font-size: 22px;
+
+    font-weight: 700;
+}
+
+
+.header-icon {
+
+    font-size: 25px;
+
+    line-height: 1;
+}
+
+
+.pass-content {
+
+    margin: 20px 30px 0;
+
+    border: 1px solid #e0e0e0;
+
+    border-radius: 12px;
+
+    padding: 18px 28px 0;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+
+.temple-name {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 17px;
+
+    height: 42px;
+}
+
+
+.temple-icon {
+
+    font-size: 30px;
+
+    color: #e59b16;
+
+    line-height: 1;
+}
+
+
+.temple-name h2 {
+
+    font-size: 22px;
+
+    color: #5f1616;
+
+    font-weight: 700;
+}
+
+.divider {
+
+    width: 100%;
+
+    border-top:
+        1px dashed #dddddd;
+
+    margin-top: 9px;
+}
+
+.pass-main {
+
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+        1.5fr
+        1fr;
+
+    min-height: 270px;
+}
+
+.pass-info {
+
+    padding:
+        17px 30px 15px 0;
+
+    border-right:
+        1px solid #dddddd;
+}
+
+
+.booking-id {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 7px;
+
+    padding-bottom: 20px;
+}
+
+
+.booking-id span {
+
+    font-size: 15px;
+
+    color: #333333;
+}
+
+
+.booking-id strong {
+
+    font-size: 23px;
+
+    font-weight: 800;
+
+    color: #171717;
+
+    letter-spacing: 0.2px;
+}
+
+.details-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+}
+
+
+.detail {
+
+    min-height: 76px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 12px 14px 12px 0;
+}
+
+
+.detail:nth-child(1),
+.detail:nth-child(2) {
+
+    border-top:
+        1px solid #eeeeee;
+}
+
+
+.detail:nth-child(3),
+.detail:nth-child(4) {
+
+    border-top:
+        1px solid #eeeeee;
+}
+
+
+.detail:nth-child(odd) {
+
+    border-right:
+        1px solid #dddddd;
+
+    padding-right: 22px;
+}
+
+
+.detail:nth-child(even) {
+
+    padding-left: 22px;
+}
+
+
+.detail-icon {
+
+    width: 27px;
+
+    font-size: 23px;
+
+    color: #6e1111;
+
+    text-align: center;
+}
+
+
+.detail p {
+
+    font-size: 13px;
+
+    color: #333333;
+
+    margin-bottom: 7px;
+}
+
+
+.detail strong {
+
+    font-size: 15px;
+
+    font-weight: 700;
+
+    color: #222222;
+
+    white-space: nowrap;
+}
+
+.qr-wrapper {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 20px 25px;
+}
+
+
+.qr-box {
+
+    width: 250px;
+
+    height: 250px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border: 1px solid #dddddd;
+
+    border-radius: 12px;
+
+    background: #ffffff;
+
+    padding: 13px;
+}
+
+
+.qr-box img {
+
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: contain;
+
+    display: block;
+}
+
+.checkin-status {
+
+    min-height: 58px;
+
+    border-top:
+        1px solid #dddddd;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 30px;
+
+    position: relative;
+}
+
+.checked-badge {
+
+    min-width: 205px;
+
+    height: 34px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    border:
+        1px solid #4b9b58;
+
+    border-radius: 7px;
+
+    background: #f4fff5;
+
+    color: #31803d;
+
+    font-size: 15px;
+
+    font-weight: 700;
+}
+
+
+.check-icon {
+
+    width: 19px;
+
+    height: 19px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #319443;
+
+    color: #ffffff;
+
+    font-size: 13px;
+}
+
+
+.checked-time {
+
+    font-size: 15px;
+
+    color: #333333;
+}
+
+
+.status-check {
+
+    position: absolute;
+
+    right: 8px;
+
+    width: 28px;
+
+    height: 28px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #26962e;
+
+    color: #ffffff;
+
+    font-size: 18px;
+
+    font-weight: 700;
+}
+
+
+.pass-actions {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 28px;
+
+    padding:
+        20px 30px 15px;
+}
+
+.pass-button {
+
+    height: 62px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 15px;
+
+    border:
+        1px solid #dddddd;
+
+    border-radius: 10px;
+
+    background: #ffffff;
+
+    color: #171717;
+
+    font-size: 17px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+
+.pass-button:hover {
+
+    background: #fafafa;
+
+    border-color: #bcbcbc;
+}
+
+
+.button-icon {
+
+    color: #7a1010;
+
+    font-size: 23px;
+
+    font-weight: 700;
+}
+
+
+.pass-note {
+
+    margin:
+        0 30px 18px;
+
+    padding-top: 14px;
+
+    border-top:
+        1px solid #eeeeee;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    font-size: 15px;
+
+    color: #333333;
+}
+
+
+.info-icon {
+
+    font-size: 21px;
+
+    color: #285c8e;
+}
+
+
+
+@media (max-width: 850px) {
+
+    .pass-main {
+
+        grid-template-columns: 1fr;
+    }
+
+    .pass-info {
+
+        border-right: none;
+    }
+
+    .qr-wrapper {
+
+        border-top:
+            1px solid #dddddd;
+
+        padding: 20px;
+    }
+
+    .qr-box {
+
+        width: 220px;
+
+        height: 220px;
+    }
+
+    .checkin-status {
+
+        gap: 15px;
+
+        flex-wrap: wrap;
+
+        padding: 10px 0;
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .qr-page {
+
+        padding: 12px;
+    }
+
+    .page-title {
+
+        font-size: 21px;
+    }
+
+    .qr-header {
+
+        height: 52px;
+
+        padding: 0 18px;
+
+        font-size: 19px;
+    }
+
+    .pass-content {
+
+        margin:
+            12px 12px 0;
+
+        padding:
+            15px 15px 0;
+    }
+
+    .temple-name h2 {
+
+        font-size: 18px;
+    }
+
+    .details-grid {
+
+        grid-template-columns: 1fr;
+    }
+
+    .detail {
+
+        border-right: none !important;
+
+        padding:
+            12px 0 !important;
+    }
+
+    .pass-actions {
+
+        grid-template-columns: 1fr;
+
+        gap: 12px;
+
+        padding:
+            15px 12px;
+    }
+
+    .pass-note {
+
+        margin:
+            0 12px 15px;
+    }
+
+    .checked-badge {
+
+        min-width: 180px;
+    }
+}

@@ -1,0 +1,480 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+body {
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background: #ffffff;
+
+    color: #222222;
+
+    min-height: 100vh;
+}
+
+
+.parking-page {
+
+    width: 100%;
+
+    min-height: 100vh;
+
+    padding: 18px 16px 30px;
+
+    border: 1px solid #eeeeee;
+
+    border-radius: 12px;
+}
+
+
+.page-title {
+
+    font-size: 29px;
+
+    font-weight: 800;
+
+    color: #111111;
+
+    margin:
+        0 0 16px 15px;
+
+    letter-spacing: 0.3px;
+}
+
+
+
+.parking-cards {
+
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 28px;
+
+    padding:
+        0 30px;
+}
+
+
+
+.parking-card {
+
+    min-height: 260px;
+
+    padding:
+        19px 28px 20px;
+
+    border:
+        1.5px solid #58a779;
+
+    border-radius: 12px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+
+/* =========================================================
+   PARKING TITLE
+========================================================= */
+
+.parking-title {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    margin-bottom: 20px;
+}
+
+
+.parking-icon {
+
+    width: 38px;
+
+    height: 38px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #07963d;
+
+    color: #ffffff;
+
+    font-size: 21px;
+
+    font-weight: 700;
+}
+
+
+.parking-title h2 {
+
+    font-size: 19px;
+
+    font-weight: 800;
+
+    color: #181818;
+}
+
+
+/* =========================================================
+   PARKING INFORMATION
+========================================================= */
+
+.parking-info {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 13px;
+
+    margin-bottom: 16px;
+}
+
+
+/* =========================================================
+   INFO ROW
+========================================================= */
+
+.info-row {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    font-size: 16px;
+
+    color: #333333;
+}
+
+
+.info-row strong {
+
+    font-size: 17px;
+
+    color: #151515;
+
+    font-weight: 500;
+}
+
+
+.info-row strong.available {
+
+    color: #15934d;
+
+    font-size: 22px;
+
+    font-weight: 800;
+}
+
+
+.info-row strong.critical {
+
+    color: #dc2424;
+
+    font-size: 22px;
+
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   OCCUPANCY
+========================================================= */
+
+.occupancy {
+
+    margin-top: 4px;
+}
+
+
+.occupancy-text {
+
+    display: flex;
+
+    align-items: baseline;
+
+    gap: 6px;
+
+    margin-bottom: 8px;
+
+    font-size: 14px;
+}
+
+
+.occupancy-text strong {
+
+    font-size: 20px;
+
+    font-weight: 800;
+}
+
+
+.occupancy-text strong.high {
+
+    color: #d82323;
+}
+
+
+.occupancy-text strong.low {
+
+    color: #17954d;
+}
+
+
+/* =========================================================
+   PROGRESS BAR
+========================================================= */
+
+.progress-bar {
+
+    width: 100%;
+
+    height: 10px;
+
+    border-radius: 8px;
+
+    overflow: hidden;
+
+    background: #e4e6eb;
+}
+
+
+.progress-fill {
+
+    height: 100%;
+
+    border-radius: 8px;
+}
+
+
+.high-fill {
+
+    background: #e31818;
+}
+
+
+.low-fill {
+
+    background: #149448;
+}
+
+
+/* =========================================================
+   RECOMMENDATION
+========================================================= */
+
+.parking-recommendation {
+
+    width: calc(100% - 60px);
+
+    min-height: 108px;
+
+    margin:
+        25px 30px 0;
+
+    padding:
+        15px 38px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 45px;
+
+    border:
+        1.5px solid #e6c65d;
+
+    border-radius: 11px;
+
+    background: #fffaf0;
+}
+
+
+/* =========================================================
+   CAR ICON
+========================================================= */
+
+.car-icon {
+
+    font-size: 58px;
+
+    line-height: 1;
+
+    color: #c81919;
+}
+
+
+/* =========================================================
+   RECOMMENDATION TEXT
+========================================================= */
+
+.recommendation-text {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+}
+
+
+.recommendation-text h2 {
+
+    font-size: 22px;
+
+    font-weight: 700;
+
+    color: #151515;
+}
+
+
+.recommendation-text h2 strong {
+
+    font-weight: 800;
+}
+
+
+.recommendation-text p {
+
+    font-size: 18px;
+
+    color: #555555;
+}
+
+
+/* =========================================================
+   HOVER EFFECT
+========================================================= */
+
+.parking-card {
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.parking-card:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 5px 14px rgba(0, 0, 0, 0.08);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .parking-cards {
+
+        grid-template-columns:
+            1fr;
+
+        padding:
+            0 20px;
+    }
+
+    .parking-recommendation {
+
+        width: calc(100% - 40px);
+
+        margin-left: 20px;
+
+        margin-right: 20px;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .parking-page {
+
+        padding:
+            14px 10px 25px;
+    }
+
+
+    .page-title {
+
+        font-size: 22px;
+
+        margin-left: 5px;
+    }
+
+
+    .parking-cards {
+
+        padding:
+            0 5px;
+
+        gap: 15px;
+    }
+
+
+    .parking-card {
+
+        padding:
+            17px 20px;
+    }
+
+
+    .parking-recommendation {
+
+        width: calc(100% - 10px);
+
+        margin:
+            18px 5px 0;
+
+        padding:
+            15px 20px;
+
+        gap: 20px;
+    }
+
+
+    .car-icon {
+
+        font-size: 42px;
+    }
+
+
+    .recommendation-text h2 {
+
+        font-size: 17px;
+    }
+
+
+    .recommendation-text p {
+
+        font-size: 14px;
+    }
+
+}

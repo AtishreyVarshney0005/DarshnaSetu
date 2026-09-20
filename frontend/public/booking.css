@@ -1,0 +1,538 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+
+    background: #ffffff;
+
+    color: #222222;
+
+    min-height: 100vh;
+}
+
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.booking-page {
+    width: 100%;
+
+    min-height: 100vh;
+
+    padding: 22px 25px 30px;
+}
+
+
+/* =========================================================
+   PAGE TITLE
+========================================================= */
+
+.page-title {
+    font-size: 28px;
+
+    font-weight: 800;
+
+    color: #171717;
+
+    margin-bottom: 10px;
+
+    letter-spacing: 0.2px;
+}
+
+
+/* =========================================================
+   MAIN BOOKING CONTAINER
+========================================================= */
+
+.booking-container {
+    width: 100%;
+
+    border: 1px solid #dcdcdc;
+
+    border-radius: 10px;
+
+    background: #ffffff;
+
+    padding: 14px 18px 16px;
+}
+
+
+/* =========================================================
+   BOOKING STEPS
+========================================================= */
+
+.booking-steps {
+    width: 100%;
+
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    padding: 0 20px 12px;
+}
+
+
+/* =========================================================
+   INDIVIDUAL STEP
+========================================================= */
+
+.step {
+    min-width: 70px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    position: relative;
+
+    z-index: 2;
+}
+
+
+.step-circle {
+    width: 38px;
+
+    height: 38px;
+
+    border-radius: 50%;
+
+    background: #eeeeee;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: #333333;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    margin-bottom: 7px;
+}
+
+
+.step span {
+    font-size: 13px;
+
+    color: #222222;
+
+    white-space: nowrap;
+
+    font-weight: 500;
+}
+
+
+/* =========================================================
+   ACTIVE STEP
+========================================================= */
+
+.step.active .step-circle {
+    background: #a50017;
+
+    color: #ffffff;
+}
+
+
+.step.active span {
+    color: #a50017;
+
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   STEP LINE
+========================================================= */
+
+.step-line {
+    flex: 1;
+
+    height: 1px;
+
+    background: #dddddd;
+
+    margin-top: 19px;
+
+    min-width: 30px;
+}
+
+
+/* =========================================================
+   SLOT SECTION
+========================================================= */
+
+.slot-section {
+    border: 1px solid #e1e1e1;
+
+    border-radius: 7px;
+
+    padding: 13px 17px 14px;
+}
+
+
+/* =========================================================
+   SLOT HEADING
+========================================================= */
+
+.slot-section h2 {
+    font-size: 18px;
+
+    font-weight: 700;
+
+    color: #222222;
+
+    margin-bottom: 10px;
+}
+
+
+/* =========================================================
+   TABLE WRAPPER
+========================================================= */
+
+.table-wrapper {
+    width: 100%;
+
+    overflow-x: auto;
+
+    border: 1px solid #dddddd;
+
+    border-radius: 6px;
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.slot-table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    table-layout: fixed;
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   TABLE HEADER
+========================================================= */
+
+.slot-table thead th {
+    height: 38px;
+
+    background: #fafafa;
+
+    color: #222222;
+
+    font-weight: 700;
+
+    text-align: center;
+
+    border-bottom: 1px solid #dcdcdc;
+
+    padding: 8px 10px;
+}
+
+
+.slot-table thead th:first-child {
+    text-align: left;
+
+    padding-left: 20px;
+}
+
+
+/* =========================================================
+   TABLE BODY
+========================================================= */
+
+.slot-table tbody td {
+    height: 38px;
+
+    text-align: center;
+
+    padding: 7px 10px;
+
+    border-bottom: 1px solid #eeeeee;
+
+    color: #222222;
+
+    font-size: 14px;
+}
+
+
+.slot-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+.slot-table tbody td:first-child {
+    text-align: left;
+
+    padding-left: 20px;
+}
+
+
+/* =========================================================
+   STATUS BADGES
+========================================================= */
+
+.status {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-width: 130px;
+
+    height: 25px;
+
+    padding: 2px 13px;
+
+    border-radius: 5px;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.3px;
+}
+
+
+/* AVAILABLE */
+
+.status.available {
+    color: #39815b;
+
+    background: #f3faf6;
+
+    border: 1px solid #b9ddca;
+}
+
+
+/* LIMITED */
+
+.status.limited {
+    color: #d88428;
+
+    background: #fffaf2;
+
+    border: 1px solid #edd7b5;
+}
+
+
+/* ALMOST FULL */
+
+.status.almost-full {
+    color: #a52c2c;
+
+    background: #fff6f6;
+
+    border: 1px solid #e8bcbc;
+}
+
+
+/* FULL */
+
+.status.full {
+    color: #555555;
+
+    background: #f1f1f1;
+
+    border: 1px solid #d3d3d3;
+}
+
+
+/* =========================================================
+   NOTE
+========================================================= */
+
+.slot-note {
+    margin-top: 11px;
+
+    font-size: 12px;
+
+    color: #555555;
+}
+
+
+.slot-note strong {
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   ACTION BUTTONS
+========================================================= */
+
+.booking-actions {
+    width: 100%;
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    align-items: center;
+
+    gap: 27px;
+
+    margin-top: 10px;
+}
+
+
+/* =========================================================
+   BACK BUTTON
+========================================================= */
+
+.back-btn {
+    width: 152px;
+
+    height: 38px;
+
+    border-radius: 7px;
+
+    border: 1px solid #d6d6d6;
+
+    background: #ffffff;
+
+    color: #222222;
+
+    font-size: 15px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+
+.back-btn:hover {
+    background: #f7f7f7;
+}
+
+
+/* =========================================================
+   NEXT BUTTON
+========================================================= */
+
+.next-btn {
+    width: 185px;
+
+    height: 38px;
+
+    border-radius: 7px;
+
+    border: none;
+
+    background: #a50017;
+
+    color: #ffffff;
+
+    font-size: 15px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+
+.next-btn:hover {
+    background: #8e0014;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .booking-page {
+        padding: 18px;
+    }
+
+    .booking-steps {
+        padding-left: 5px;
+
+        padding-right: 5px;
+    }
+
+    .step span {
+        font-size: 11px;
+    }
+
+    .step-circle {
+        width: 34px;
+
+        height: 34px;
+    }
+
+    .step-line {
+        margin-top: 17px;
+    }
+
+    .slot-table {
+        min-width: 750px;
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .booking-page {
+        padding: 12px;
+    }
+
+    .page-title {
+        font-size: 21px;
+    }
+
+    .booking-container {
+        padding: 10px;
+    }
+
+    .booking-steps {
+        overflow-x: auto;
+
+        justify-content: flex-start;
+
+        padding-bottom: 15px;
+    }
+
+    .step {
+        min-width: 80px;
+    }
+
+    .step-line {
+        min-width: 30px;
+    }
+
+    .slot-section h2 {
+        font-size: 16px;
+    }
+
+    .booking-actions {
+        justify-content: space-between;
+
+        gap: 10px;
+    }
+
+    .back-btn,
+    .next-btn {
+        width: 48%;
+    }
+}
