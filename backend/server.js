@@ -16,18 +16,24 @@ dotenv.config({ path: path.resolve(path.dirname(fileURLToPath(import.meta.url)),
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-const configuredFrontendOrigin = process.env.FRONTEND_URL || 'http://localhost:5173';
-const localDevelopmentOrigins = [
-  configuredFrontendOrigin,
+const parseOrigins = (value) =>
+  (value || '')
+    .split(',')
+    .map(origin => origin.trim())
+    .filter(Boolean);
+
+const allowedOrigins = [
+  ...parseOrigins(process.env.CORS_ALLOWED_ORIGINS),
+  process.env.FRONTEND_URL,
   'http://localhost:5173',
   'http://localhost:5174',
   'http://127.0.0.1:5173',
   'http://127.0.0.1:5174'
-];
+].filter(Boolean);
 
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || localDevelopmentOrigins.includes(origin)) return callback(null, true);
+    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
     return callback(new Error('Origin is not allowed by DarshanSetu CORS policy'));
   },
   credentials: true
