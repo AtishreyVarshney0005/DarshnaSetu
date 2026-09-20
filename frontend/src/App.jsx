@@ -94,7 +94,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<AuthenticatedEntry />} />
         <Route path="/admin" element={<Navigate to="/dashboard" replace />} />
-        <Route path="/admin/dashboard" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/admin/dashboard" element={<RequireAdmin><Dashboard /></RequireAdmin>} />
         <Route path="/admin/bookings" element={<RequireAdmin><Booking /></RequireAdmin>} />
         <Route path="/admin/dashboard/bookings" element={<RequireAdmin><Booking /></RequireAdmin>} />
         <Route path="/admin/crowd-prediction" element={<RequireAdmin><AdminSection /></RequireAdmin>} />

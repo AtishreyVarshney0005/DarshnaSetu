@@ -44,10 +44,10 @@ INSERT INTO parking (temple_id, name, capacity, occupied) VALUES
 (3, 'Parking West', 500, 280);
 
 INSERT INTO users (name, email, password, phone, role) VALUES
-('Admin User', 'admin@darshansetu.com', '$2a$10$Kf/LW4bBF1CuqLhGzbE9HuYour8CI2zLw.7fIG4ATkR.45pJCW8Oi', '9876543210', 'admin'),
-('John Visitor', 'john@example.com', '$2a$10$Kf/LW4bBF1CuqLhGzbE9HuYour8CI2zLw.7fIG4ATkR.45pJCW8Oi', '9876543211', 'user'),
-('Staff Member', 'staff@darshansetu.com', '$2a$10$Kf/LW4bBF1CuqLhGzbE9HuYour8CI2zLw.7fIG4ATkR.45pJCW8Oi', '9876543212', 'staff'),
-('Jane Visitor', 'jane@example.com', '$2a$10$Kf/LW4bBF1CuqLhGzbE9HuYour8CI2zLw.7fIG4ATkR.45pJCW8Oi', '9876543213', 'user');
+('Admin User', 'admin@darshansetu.com', '$2a$10$.3W4Xu6IVf4Q5v8OvvKQn.aOHRuc1apnMqi2XFk7CjoJlqJvqpLAC', '9876543210', 'admin'),
+('John Visitor', 'john@example.com', '$2a$10$.3W4Xu6IVf4Q5v8OvvKQn.aOHRuc1apnMqi2XFk7CjoJlqJvqpLAC', '9876543211', 'user'),
+('Staff Member', 'staff@darshansetu.com', '$2a$10$.3W4Xu6IVf4Q5v8OvvKQn.aOHRuc1apnMqi2XFk7CjoJlqJvqpLAC', '9876543212', 'staff'),
+('Jane Visitor', 'jane@example.com', '$2a$10$.3W4Xu6IVf4Q5v8OvvKQn.aOHRuc1apnMqi2XFk7CjoJlqJvqpLAC', '9876543213', 'user');
 
 INSERT INTO users (name, email, password, phone, role) VALUES
 ('Amit Kumar', 'amit.staff@darshansetu.com', NULL, '9876500001', 'staff'),

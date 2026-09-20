@@ -21,8 +21,13 @@ const pool = new Pool({
 
 const normalizeSql = (sql, params = []) => {
   let statement = String(sql || '').trim();
+  const ignoredInsert = /^INSERT\s+IGNORE\s+INTO\b/i.test(statement);
   statement = statement.replace(/\bINSERT\s+IGNORE\s+INTO\b/gi, 'INSERT INTO');
   statement = statement.replace(/\bDELETE\s+(\w+)\s+FROM\b/gi, 'DELETE FROM');
+  statement = statement.replace(/DATE_FORMAT\(([^,]+),\s*'[^']+'\)/gi, "TO_CHAR($1, 'YYYY-MM-DD')");
+  statement = statement.replace(/\bCURDATE\(\)/gi, 'CURRENT_DATE');
+  statement = statement.replace(/\bHOUR\(NOW\(\)\)/gi, 'EXTRACT(HOUR FROM CURRENT_TIMESTAMP)::int');
+  statement = statement.replace(/\bNOW\(\)/gi, 'CURRENT_TIMESTAMP');
 
   if (Array.isArray(params) && params.length > 0) {
     let paramIndex = 0;
@@ -32,20 +37,26 @@ const normalizeSql = (sql, params = []) => {
     });
   }
 
-  if (/^INSERT\s+INTO\s+/i.test(statement) && !/RETURNING\b/i.test(statement)) {
+  if (ignoredInsert && !/ON\s+CONFLICT\b/i.test(statement)) {
+    statement = `${statement} ON CONFLICT DO NOTHING`;
+  }
+
+  if (/^INSERT\s+INTO\s+/i.test(statement) && !/RETURNING\b/i.test(statement) && !/ON\s+CONFLICT\s+DO\s+NOTHING$/i.test(statement)) {
     statement = `${statement} RETURNING *`;
   }
 
   return { sql: statement, params };
 };
 
-const normalizeResult = (result) => {
+const normalizeResult = (result, sql = '') => {
   if (!result || typeof result !== 'object') {
     return [[], []];
   }
 
+  const command = result.command?.toUpperCase?.() || '';
+  const isReadQuery = /^(SELECT|WITH|SHOW|DESCRIBE|EXPLAIN)\b/i.test(String(sql).trim());
   const selectLike = ['SELECT', 'WITH', 'SHOW', 'DESCRIBE', 'EXPLAIN'];
-  if (selectLike.includes(result.command?.toUpperCase?.() || '')) {
+  if (isReadQuery || selectLike.includes(command) || (Array.isArray(result.rows) && !['INSERT', 'UPDATE', 'DELETE'].includes(command))) {
     return [result.rows || [], result.fields || []];
   }
 
@@ -65,7 +76,7 @@ const originalPoolQuery = pool.query.bind(pool);
 pool.query = async (sql, params = []) => {
   const { sql: normalizedSql, params: normalizedParams } = normalizeSql(sql, params);
   const result = await originalPoolQuery(normalizedSql, normalizedParams);
-  return normalizeResult(result);
+  return normalizeResult(result, normalizedSql);
 };
 
 const originalPoolConnect = pool.connect.bind(pool);
@@ -75,8 +86,13 @@ pool.connect = async () => {
   client.query = async (sql, params = []) => {
     const { sql: normalizedSql, params: normalizedParams } = normalizeSql(sql, params);
     const result = await originalClientQuery(normalizedSql, normalizedParams);
-    return normalizeResult(result);
+    return normalizeResult(result, normalizedSql);
   };
+
+  client.beginTransaction = async () => client.query('BEGIN');
+  client.commit = async () => client.query('COMMIT');
+  client.rollback = async () => client.query('ROLLBACK');
+
   return client;
 };
 
@@ -109,6 +125,43 @@ export const testConnection = async () => {
 export const ensureStaffSchema = async () => {
   const client = await pool.connect();
   try {
+    await client.query(`INSERT INTO temples (name, location, capacity, description)
+      VALUES
+        ('Banke Bihari Temple', 'Vrindavan', 10000, 'Ancient temple dedicated to Lord Krishna'),
+        ('Dauji Temple', 'Baldeo', 8000, 'Shiva temple with historical significance'),
+        ('Dwarkadhish Temple', 'Mathura', 12000, 'Grand temple of Lord Krishna'),
+        ('Giriraj Ji Temple', 'Govardhan', 6000, 'Sacred mountain temple'),
+        ('Prem Mandir', 'Vrindavan', 9000, 'Modern architectural marvel'),
+        ('Radha Rani Temple', 'Barsana', 7000, 'Devotion to Radha Ji'),
+        ('Shri Krishna Janmabhoomi', 'Mathura', 15000, 'Birthplace of Lord Krishna')
+      ON CONFLICT (name) DO NOTHING`);
+
+    await client.query(`INSERT INTO darshan_types (temple_id, name, description, price, duration_minutes)
+      SELECT t.id, values.name, values.description, values.price, values.duration_minutes
+      FROM temples t
+      CROSS JOIN (VALUES
+        ('Regular Darshan', 'Standard darshan experience', 0, 30),
+        ('VIP Darshan', 'Priority access with less waiting', 500, 30),
+        ('Special Pooja Darshan', 'Includes special prayers', 1000, 45)
+      ) AS values(name, description, price, duration_minutes)
+      WHERE NOT EXISTS (SELECT 1 FROM darshan_types d WHERE d.temple_id = t.id)`);
+
+    await client.query(`INSERT INTO gates (temple_id, name, capacity, current_crowd, risk_level)
+      SELECT t.id, values.name, values.capacity, values.current_crowd, values.risk_level
+      FROM temples t
+      CROSS JOIN (VALUES
+        ('Gate A', 2000, 0, 'safe'),
+        ('Gate B', 1800, 0, 'safe'),
+        ('Gate C', 2000, 0, 'safe'),
+        ('Gate D', 2200, 0, 'safe')
+      ) AS values(name, capacity, current_crowd, risk_level)
+      WHERE NOT EXISTS (SELECT 1 FROM gates g WHERE g.temple_id = t.id)`);
+
+    await client.query(`INSERT INTO parking (temple_id, name, capacity, occupied, available, occupancy_percentage)
+      SELECT t.id, 'Parking A', 500, 0, 500, 0
+      FROM temples t
+      WHERE NOT EXISTS (SELECT 1 FROM parking p WHERE p.temple_id = t.id)`);
+
     await client.query(`CREATE TABLE IF NOT EXISTS staff_profiles (
       id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
       user_id INTEGER NOT NULL UNIQUE,
@@ -187,6 +240,23 @@ export const ensureStaffSchema = async () => {
       SELECT u.id, 1, 'ST-052', 'Support', 'Temple Courtyard', '10:00:00', '18:00:00', 'Off Duty', 'Regular Duty', 'LOW', 'Off Duty', '9876511006', '2024-05-03'
       FROM users u WHERE u.phone = '9876500006'
       ON CONFLICT (user_id) DO NOTHING`);
+  } finally {
+    client.release();
+  }
+};
+
+export const ensureDefaultAdmin = async () => {
+  if (process.env.NODE_ENV === 'production') return;
+
+  const client = await pool.connect();
+  try {
+    await client.query(`INSERT INTO users (name, email, password, phone, role)
+      VALUES ('Admin User', 'admin@darshansetu.com', '$2a$10$.3W4Xu6IVf4Q5v8OvvKQn.aOHRuc1apnMqi2XFk7CjoJlqJvqpLAC', '9876543210', 'admin')
+      ON CONFLICT (phone) DO UPDATE SET
+        name = EXCLUDED.name,
+        email = EXCLUDED.email,
+        password = EXCLUDED.password,
+        role = EXCLUDED.role`);
   } finally {
     client.release();
   }

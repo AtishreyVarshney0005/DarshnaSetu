@@ -13,14 +13,17 @@ const validateBookingDate = (date) => {
 };
 
 const ensureSlotsForDate = async (connection, templeId, date) => {
-  const [temples] = await connection.query('SELECT capacity FROM temples WHERE id = ?', [templeId]);
+  const normalizedTempleId = Number(templeId);
+  if (!Number.isInteger(normalizedTempleId)) return false;
+
+  const [temples] = await connection.query('SELECT capacity FROM temples WHERE id = ?', [normalizedTempleId]);
   if (!temples.length) return false;
   const capacity = Math.max(100, Math.floor(temples[0].capacity / 10));
   const defaultSlots = [['06:00:00', '07:00:00'], ['07:00:00', '08:00:00'], ['08:00:00', '09:00:00'], ['16:00:00', '17:00:00'], ['17:00:00', '18:00:00'], ['18:00:00', '19:00:00']];
   await connection.query(
     `INSERT IGNORE INTO time_slots (temple_id, date, start_time, end_time, capacity, booked, status)
      VALUES ${defaultSlots.map(() => '(?, ?, ?, ?, ?, 0, \'available\')').join(', ')}`,
-    defaultSlots.flatMap(([start, end]) => [templeId, date, start, end, capacity])
+    defaultSlots.flatMap(([start, end]) => [normalizedTempleId, date, start, end, capacity])
   );
   return true;
 };
@@ -83,7 +86,9 @@ export const getTimeSlots = async (req, res) => {
     }
 
     const [slots] = await connection.query(
-      'SELECT * FROM time_slots WHERE temple_id = ? AND date = ? ORDER BY start_time',
+      `SELECT id, temple_id, TO_CHAR(date, 'YYYY-MM-DD') AS date, start_time, end_time,
+              capacity, booked, status, created_at
+       FROM time_slots WHERE temple_id = ? AND date = ? ORDER BY start_time`,
       [templeId, date]
     );
 

@@ -27,9 +27,9 @@ function Sidebar() {
   const navigate = useNavigate();
   const logout = () => { clearSession(); navigate('/login', { replace: true }); };
   return <aside className="admin-redesign-sidebar">
-    <Link className="admin-redesign-brand" to="/dashboard"><img src={darshanSetuLogo} alt="DarshanSetu" /><span>DarshanSetu<small>Divine Connect</small></span></Link>
+    <Link className="admin-redesign-brand" to="/admin/dashboard"><img src={darshanSetuLogo} alt="DarshanSetu" /><span>DarshanSetu<small>Divine Connect</small></span></Link>
     <div className="admin-redesign-profile"><span>AU</span><div><strong>Admin User</strong><small>Super Admin</small></div></div>
-    <nav className="admin-redesign-nav" aria-label="Admin navigation">{navItems.map(([icon, label, href]) => <NavLink end={label === 'Dashboard'} key={label} className={({ isActive }) => `admin-nav-item ${isActive ? 'active' : ''}`} to={label === 'Dashboard' ? '/dashboard' : href}><i>{icon}</i>{label}</NavLink>)}</nav>
+    <nav className="admin-redesign-nav" aria-label="Admin navigation">{navItems.map(([icon, label, href]) => <NavLink end={label === 'Dashboard'} key={label} className={({ isActive }) => `admin-nav-item ${isActive ? 'active' : ''}`} to={href}><i>{icon}</i>{label}</NavLink>)}</nav>
     <button type="button" className="admin-redesign-logout" onClick={logout}>↪ <span>Logout</span></button>
   </aside>;
 }
@@ -79,7 +79,11 @@ export default function Admin() {
   const loadCrowd = () => getLiveCrowd(selectedTempleId).then(({ data }) => setLive(normalizeCrowdData(data))).catch(() => setLive(normalizeCrowdData({ currentVisitors: 0, capacity: 10000, estimatedWait: 8, occupancy: 10, riskLevel: 'safe', gates: [] })));
   React.useEffect(() => {
     getTemples().then(({ data }) => {
-      if (Array.isArray(data) && data.length >= 7) setTemples(data.slice(0, 7));
+      if (Array.isArray(data) && data.length) {
+        const availableTemples = data.slice(0, 7);
+        setTemples(availableTemples);
+        setSelectedTempleId(availableTemples[0].id);
+      }
     }).catch(() => {});
   }, []);
   React.useEffect(() => {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink, useLocation, useNavigate, useParams } from 'react-router-dom';
-import { clearSession, createAdminEmergency, deployAdminStaff, getAdminEmergencies, getAdminStaff, getAdminStaffStats, getLiveCrowd, removeAdminStaff, updateAdminEmergency, updateAdminStaff, updateAdminStaffStatus, updateAdminStaffZone } from '../api/client';
+import { clearSession, createAdminEmergency, deployAdminStaff, getAdminEmergencies, getAdminStaff, getAdminStaffStats, getLiveCrowd, getTemples, removeAdminStaff, updateAdminEmergency, updateAdminStaff, updateAdminStaffStatus, updateAdminStaffZone } from '../api/client';
 import '../styles/admin-section.css';
 import '../styles/emergency-center.css';
 import '../styles/staff-security.css';
@@ -300,7 +300,15 @@ export default function AdminSection() {
   const location = useLocation();
   const routeSection = { '/admin/crowd': 'crowd-prediction', '/admin/queue': 'queue-management', '/admin/staff': 'staff-security', '/admin/bookings': 'bookings', '/admin/dashboard/bookings': 'bookings', '/admin/crowd-prediction': 'crowd-prediction', '/admin/simulations': 'simulations', '/admin/gates-zones': 'gates-zones', '/admin/queue-management': 'queue-management', '/admin/parking': 'parking', '/admin/emergencies': 'emergencies', '/admin/staff-security': 'staff-security', '/admin/announcements': 'announcements', '/admin/analytics': 'analytics', '/admin/settings': 'settings' }[location.pathname] || section;
   const [crowd, setCrowd] = useState(null);
-  useEffect(() => { if (routeSection === 'crowd-prediction' || routeSection === 'dashboard') getLiveCrowd(1).then(({ data }) => setCrowd(data)).catch(() => {}); }, [routeSection]);
+  const [templeId, setTempleId] = useState(1);
+  useEffect(() => {
+    getTemples().then(({ data }) => {
+      if (Array.isArray(data) && data.length) setTempleId(data[0].id);
+    }).catch(() => {});
+  }, []);
+  useEffect(() => {
+    if (routeSection === 'crowd-prediction' || routeSection === 'dashboard') getLiveCrowd(templeId).then(({ data }) => setCrowd(data)).catch(() => {});
+  }, [routeSection, templeId]);
   const content = { 'crowd-prediction': ['Crowd & Prediction', <CrowdSection crowd={crowd} />], simulations: ['Crowd Simulation Center', <SimulationsSection />], bookings: ['Booking Management', <BookingsSection />], 'gates-zones': ['Gates & Zones Management', <GatesSection />], 'queue-management': ['Queue Management', <QueueSection />], parking: ['Parking Management', <ParkingSection />], emergencies: ['Emergency Management Center', <EmergenciesSection />], 'staff-security': ['Staff & Security Management', <StaffSection />], announcements: ['Announcements Management', <AnnouncementsSection />], analytics: ['Analytics & Reports', <AnalyticsSection />], settings: ['Admin Settings', <SettingsSection />] }[routeSection] || ['Admin Operations', <DashboardSection crowd={crowd} />];
   return <div className="admin-section-page"><Sidebar /><main className="admin-section-main"><Header title={content[0]} /><div className="admin-section-content">{content[1]}</div></main></div>;
 }

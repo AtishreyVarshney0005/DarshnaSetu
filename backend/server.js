@@ -3,7 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import { ensureStaffSchema, testConnection, default as pool } from './config/database.js';
+import { ensureDefaultAdmin, ensureStaffSchema, testConnection, default as pool } from './config/database.js';
 import { errorHandler } from './middleware/auth.js';
 import authRoutes from './routes/authRoutes.js';
 import bookingRoutes from './routes/bookingRoutes.js';
@@ -70,6 +70,7 @@ const startServer = async () => {
 
     await testConnection();
     await ensureStaffSchema();
+    await ensureDefaultAdmin();
 
     app.listen(PORT, () => {
       console.log(`\n✅ DarshanSetu Backend Server is running on http://localhost:${PORT}`);
