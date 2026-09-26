@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { login, saveSession } from '../api/client';
 import '../styles/login.css';
 import darshanSetuLogo from '../../assets/DarshanSetu_Logo.png';
 
-const initialForm = { mobile: '', password: '' };
+const initialForm = { mobile: '9876543210', password: 'password123' };
 
 const validateMobile = (mobile) => {
   if (!mobile?.trim()) return 'Mobile number is required';
@@ -110,6 +110,10 @@ export default function Login() {
             <p>Login to continue your divine journey</p>
           </div>
 
+          <p className="login-credentials" role="note">
+            Demo login: <strong>9876543210</strong> &middot; Password: <strong>password123</strong>
+          </p>
+
           <form onSubmit={handleSubmit} noValidate>
             <div className="field-group">
               <label htmlFor="login-mobile">Mobile Number</label>
@@ -133,7 +137,6 @@ export default function Login() {
             <div className="field-group">
               <div className="label-row">
                 <label htmlFor="login-password">Password</label>
-                <Link to="/signup" className="inline-link">Forgot Password?</Link>
               </div>
               <div className={`input-shell ${errors.password ? 'is-invalid' : ''}`}>
                 <span className="field-icon"><LockIcon /></span>
@@ -169,10 +172,6 @@ export default function Login() {
               {loading ? 'Logging in...' : 'Login →'}
             </button>
           </form>
-
-          <p className="auth-footer">
-            Don&apos;t have an account? <Link to="/signup">Sign Up</Link>
-          </p>
         </div>
 
         <div className="auth-features" aria-label="DarshanSetu benefits">

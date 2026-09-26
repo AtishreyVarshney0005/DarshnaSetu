@@ -14,7 +14,6 @@ import Notifications from "./pages/Notifications";
 import SmartParking from "./pages/SmartParking";
 import Placeholder from "./pages/Placeholder";
 import Login from "./pages/Login";
-import Signup from "./pages/Signup";
 import AdminSection from "./pages/AdminSection";
 
 function LoadingScreen() {
@@ -128,8 +127,8 @@ export default function App() {
         <Route path="/live-crowd" element={<RequireAuth><CrowdMap /></RequireAuth>} />
         <Route path="/virtual-darshan" element={<RequireAuth><Placeholder title="Virtual Darshan" /></RequireAuth>} />
         <Route path="/services" element={<RequireAuth><Placeholder title="Services" /></RequireAuth>} />
+        <Route path="/signup" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<RedirectIfAuthenticated><Login /></RedirectIfAuthenticated>} />
-        <Route path="/signup" element={<RedirectIfAuthenticated><Signup /></RedirectIfAuthenticated>} />
         <Route path="/emergency" element={<RequireAuth><EmergencySos /></RequireAuth>} />
         <Route path="/parking" element={<RequireAuth><SmartParking /></RequireAuth>} />
         <Route path="*" element={<NotFound />} />

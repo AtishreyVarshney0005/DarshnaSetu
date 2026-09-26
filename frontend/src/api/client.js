@@ -55,11 +55,6 @@ export const login = (mobile, password) => request('/auth/login', {
   body: JSON.stringify({ mobile, password })
 });
 
-export const signup = (details) => request('/auth/signup', {
-  method: 'POST',
-  body: JSON.stringify(details)
-});
-
 export const getCurrentUser = () => request('/auth/me');
 
 export const getTemples = () => request('/bookings/temples');
