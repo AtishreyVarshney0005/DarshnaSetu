@@ -1,5 +1,6 @@
 import pg from 'pg';
 import dotenv from 'dotenv';
+import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
@@ -7,12 +8,18 @@ dotenv.config({ path: path.resolve(path.dirname(fileURLToPath(import.meta.url)),
 
 const { Pool } = pg;
 
+const connectionString = process.env.DATABASE_URL
+  || process.env.DATABASE_POSTGRES_URL
+  || process.env.DATABASE_POSTGRES_URL_NON_POOLING;
+
 const pool = new Pool({
-  host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'postgres',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'darshansetu',
-  port: Number(process.env.DB_PORT || 5432),
+  ...(connectionString ? { connectionString } : {
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'postgres',
+    password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_NAME || 'darshansetu',
+    port: Number(process.env.DB_PORT || 5432)
+  }),
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
   max: 10,
   idleTimeoutMillis: 30000,
@@ -100,15 +107,20 @@ pool.getConnection = async () => pool.connect();
 
 export const testConnection = async () => {
   try {
+    const hasConnectionString = Boolean(
+      process.env.DATABASE_POSTGRES_URL
+      || process.env.DATABASE_URL
+      || process.env.DATABASE_POSTGRES_URL_NON_POOLING
+    );
     const dbHost = process.env.DB_HOST?.trim();
     const dbUser = process.env.DB_USER?.trim();
     const dbName = process.env.DB_NAME?.trim();
 
-    if (!dbHost || dbHost.includes('your-render-mysql-host') || (dbHost === 'localhost' && !process.env.DB_PASSWORD)) {
+    if (!hasConnectionString && (!dbHost || dbHost.includes('your-render-mysql-host') || (dbHost === 'localhost' && !process.env.DB_PASSWORD))) {
       throw new Error('DB_HOST is not configured for PostgreSQL. Set DB_HOST, DB_USER, DB_PASSWORD, and DB_NAME in your Render environment variables.');
     }
 
-    if (!dbUser || !dbName || process.env.DB_PASSWORD === undefined) {
+    if (!hasConnectionString && (!dbUser || !dbName || process.env.DB_PASSWORD === undefined)) {
       throw new Error('PostgreSQL environment is incomplete. Set DB_HOST, DB_USER, DB_PASSWORD, and DB_NAME before deploying.');
     }
 
@@ -120,6 +132,44 @@ export const testConnection = async () => {
     console.error('❌ Database connection error:', error.message);
     process.exit(1);
   }
+};
+
+let initializationPromise;
+
+export const initializeDatabase = () => {
+  if (!initializationPromise) {
+    initializationPromise = (async () => {
+      const client = await pool.connect();
+      try {
+        await client.query('BEGIN');
+        await client.query('SELECT pg_advisory_xact_lock(117979989)');
+
+        const [schemaState] = await client.query("SELECT to_regclass('public.users') AS users");
+        if (!schemaState[0]?.users) {
+          const schemaPath = path.resolve(
+            path.dirname(fileURLToPath(import.meta.url)),
+            '../database/postgres_schema.sql'
+          );
+          await client.query(readFileSync(schemaPath, 'utf8'));
+        }
+
+        await client.query('COMMIT');
+      } catch (error) {
+        await client.query('ROLLBACK').catch(() => {});
+        throw error;
+      } finally {
+        client.release();
+      }
+
+      await ensureStaffSchema();
+      await ensureDefaultAdmin();
+    })().catch(error => {
+      initializationPromise = undefined;
+      throw error;
+    });
+  }
+
+  return initializationPromise;
 };
 
 export const ensureStaffSchema = async () => {

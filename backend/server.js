@@ -3,7 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import { ensureDefaultAdmin, ensureStaffSchema, testConnection, default as pool } from './config/database.js';
+import { initializeDatabase, default as pool } from './config/database.js';
 import { errorHandler } from './middleware/auth.js';
 import authRoutes from './routes/authRoutes.js';
 import bookingRoutes from './routes/bookingRoutes.js';
@@ -60,6 +60,22 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use(async (req, res, next) => {
+  const isDemoLogin = req.method === 'POST'
+    && req.path === '/api/auth/login'
+    && req.body?.mobile === '9876543210'
+    && req.body?.password === 'password123';
+
+  if (req.path === '/api/health' || isDemoLogin) return next();
+
+  try {
+    await initializeDatabase();
+    return next();
+  } catch (error) {
+    return next(error);
+  }
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/admin', adminRoutes);
@@ -86,9 +102,7 @@ app.use(errorHandler);
 const startServer = async () => {
   try {
 
-    await testConnection();
-    await ensureStaffSchema();
-    await ensureDefaultAdmin();
+    await initializeDatabase();
 
     app.listen(PORT, () => {
       console.log(`\n✅ DarshanSetu Backend Server is running on http://localhost:${PORT}`);
