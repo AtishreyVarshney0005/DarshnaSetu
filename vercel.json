@@ -15,7 +15,7 @@
       "entrypoint": "server.js",
       "functions": {
         "server.js": {
-          "includeFiles": "database/postgres_schema.sql"
+          "includeFiles": "**/*.sql"
         }
       }
     }

@@ -156,11 +156,8 @@ export const initializeDatabase = () => {
 
         const schemaState = await client.query("SELECT to_regclass('public.users') AS users");
         if (!schemaState.rows[0]?.users) {
-          const schemaPath = path.resolve(
-            path.dirname(fileURLToPath(import.meta.url)),
-            '../database/postgres_schema.sql'
-          );
-          await client.query(readFileSync(schemaPath, 'utf8'));
+          const schemaUrl = new URL('../database/postgres_schema.sql', import.meta.url);
+          await client.query(readFileSync(schemaUrl, 'utf8'));
         }
 
         await client.query('COMMIT');
