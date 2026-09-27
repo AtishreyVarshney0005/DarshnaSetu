@@ -154,8 +154,8 @@ export const initializeDatabase = () => {
         await client.query('BEGIN');
         await client.query('SELECT pg_advisory_xact_lock(117979989)');
 
-        const [schemaState] = await client.query("SELECT to_regclass('public.users') AS users");
-        if (!schemaState[0]?.users) {
+        const schemaState = await client.query("SELECT to_regclass('public.users') AS users");
+        if (!schemaState.rows[0]?.users) {
           const schemaPath = path.resolve(
             path.dirname(fileURLToPath(import.meta.url)),
             '../database/postgres_schema.sql'
