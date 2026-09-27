@@ -246,8 +246,6 @@ export const ensureStaffSchema = async () => {
 };
 
 export const ensureDefaultAdmin = async () => {
-  if (process.env.NODE_ENV === 'production') return;
-
   const client = await pool.connect();
   try {
     await client.query(`INSERT INTO users (name, email, password, phone, role)

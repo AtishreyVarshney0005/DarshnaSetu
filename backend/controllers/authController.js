@@ -109,7 +109,17 @@ export const login = async (req, res) => {
     }
 
     const user = users[0];
-    const passwordMatches = await comparePassword(password, user.password || '');
+
+    if (!user?.password || typeof user.password !== 'string' || user.password.trim() === '') {
+      return errorResponse(res, 401, 'Invalid email or password');
+    }
+
+    let passwordMatches = false;
+    try {
+      passwordMatches = await comparePassword(password, user.password);
+    } catch (error) {
+      return errorResponse(res, 401, 'Invalid email or password');
+    }
 
     if (!passwordMatches) {
       return errorResponse(res, 401, 'Invalid email or password');

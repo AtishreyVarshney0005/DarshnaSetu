@@ -22,9 +22,27 @@ const parseOrigins = (value) =>
     .map(origin => origin.trim())
     .filter(Boolean);
 
+const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+const isAllowedOrigin = (origin, candidates) => {
+  if (!origin) return true;
+
+  return candidates.some(candidate => {
+    if (!candidate) return false;
+    if (candidate === origin) return true;
+    if (candidate.includes('*')) {
+      const pattern = new RegExp(`^${candidate.split('*').map(escapeRegex).join('.*')}$`);
+      return pattern.test(origin);
+    }
+    return false;
+  });
+};
+
 const allowedOrigins = [
   ...parseOrigins(process.env.CORS_ALLOWED_ORIGINS),
   process.env.FRONTEND_URL,
+  'https://darshna-setu.vercel.app',
+  'https://*.vercel.app',
   'http://localhost:5173',
   'http://localhost:5174',
   'http://127.0.0.1:5173',
@@ -33,7 +51,7 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+    if (isAllowedOrigin(origin, allowedOrigins)) return callback(null, true);
     return callback(new Error('Origin is not allowed by DarshanSetu CORS policy'));
   },
   credentials: true
