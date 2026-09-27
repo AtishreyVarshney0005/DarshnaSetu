@@ -99,10 +99,17 @@ app.get('/api/health/database', async (req, res) => {
     return res.status(200).json({ success: true, tableCount: rows[0].table_count });
   } catch (error) {
     console.error('Database readiness check failed:', error.message);
+    let detail = String(error.message || '');
+    for (const [key, value] of Object.entries(process.env)) {
+      if (/^(DATABASE|DB_|PGHOST|PGUSER|PGPASSWORD)/.test(key) && value) {
+        detail = detail.replaceAll(value, '[redacted]');
+      }
+    }
     return res.status(503).json({
       success: false,
       stage: 'database_initialization',
-      code: error.code || error.name || 'DATABASE_ERROR'
+      code: error.code || error.name || 'DATABASE_ERROR',
+      detail: detail.slice(0, 180)
     });
   }
 });
