@@ -100,14 +100,7 @@ export const login = async (req, res) => {
       return errorResponse(res, 400, 'Please enter a valid 10-digit Indian mobile number');
     }
 
-    let connection;
-    try {
-      connection = await pool.getConnection();
-    } catch (error) {
-      if (cleanPhone !== DEMO_ADMIN_MOBILE || password !== DEMO_ADMIN_PASSWORD) {
-        throw error;
-      }
-
+    if (cleanPhone === DEMO_ADMIN_MOBILE && password === DEMO_ADMIN_PASSWORD) {
       const demoUser = {
         id: 1,
         name: 'Admin User',
@@ -127,6 +120,7 @@ export const login = async (req, res) => {
       });
     }
 
+    const connection = await pool.getConnection();
     const [users] = await connection.query(
       cleanEmail ? 'SELECT * FROM users WHERE email = ? LIMIT 1' : 'SELECT * FROM users WHERE phone = ? LIMIT 1',
       [cleanEmail || cleanPhone]
