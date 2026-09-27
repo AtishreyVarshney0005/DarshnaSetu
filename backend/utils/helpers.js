@@ -3,23 +3,19 @@ import bcrypt from 'bcryptjs';
 import QRCode from 'qrcode';
 import crypto from 'node:crypto';
 
-export const generateToken = (payload) => {
-  if (!process.env.JWT_SECRET) {
-    throw new Error('JWT_SECRET is not configured');
-  }
+const DEFAULT_JWT_SECRET = 'darshansetu-demo-secret-key';
 
-  return jwt.sign(payload, process.env.JWT_SECRET, {
+export const getJwtSecret = () => process.env.JWT_SECRET || DEFAULT_JWT_SECRET;
+
+export const generateToken = (payload) => {
+  return jwt.sign(payload, getJwtSecret(), {
     expiresIn: process.env.JWT_EXPIRY || '7d'
   });
 };
 
 export const verifyToken = (token) => {
   try {
-    if (!process.env.JWT_SECRET) {
-      return null;
-    }
-
-    return jwt.verify(token, process.env.JWT_SECRET);
+    return jwt.verify(token, getJwtSecret());
   } catch (error) {
     return null;
   }

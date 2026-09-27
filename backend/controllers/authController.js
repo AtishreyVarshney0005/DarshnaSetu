@@ -125,13 +125,18 @@ export const login = async (req, res) => {
       return errorResponse(res, 401, 'Invalid email or password');
     }
 
-    const token = generateToken({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      phone: user.phone,
-      role: user.role
-    });
+    let token;
+    try {
+      token = generateToken({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        role: user.role
+      });
+    } catch (error) {
+      return errorResponse(res, 500, 'Authentication service is not configured. Please contact support.', error);
+    }
 
     return successResponse(res, 200, 'Login successful', {
       userId: user.id,
