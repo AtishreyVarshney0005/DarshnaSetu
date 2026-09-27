@@ -168,7 +168,11 @@ export const initializeDatabase = () => {
         await client.query('ROLLBACK').catch(() => {});
         throw error;
       } finally {
-        client.release();
+        if (migrationConnectionString) {
+          await client.end();
+        } else {
+          client.release();
+        }
       }
 
       await ensureStaffSchema();
