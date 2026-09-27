@@ -12,7 +12,12 @@
     },
     "backend": {
       "root": "backend",
-      "entrypoint": "server.js"
+      "entrypoint": "server.js",
+      "functions": {
+        "server.js": {
+          "includeFiles": "database/postgres_schema.sql"
+        }
+      }
     }
   },
   "rewrites": [
