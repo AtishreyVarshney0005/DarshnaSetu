@@ -1,8 +1,8 @@
 import pg from 'pg';
 import dotenv from 'dotenv';
-import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import schema from './schema.js';
 
 dotenv.config({ path: path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../.env') });
 
@@ -156,8 +156,7 @@ export const initializeDatabase = () => {
 
         const schemaState = await client.query("SELECT to_regclass('public.users') AS users");
         if (!schemaState.rows[0]?.users) {
-          const schemaUrl = new URL('../database/postgres_schema.sql', import.meta.url);
-          await client.query(readFileSync(schemaUrl, 'utf8'));
+          await client.query(schema);
         }
 
         await client.query('COMMIT');

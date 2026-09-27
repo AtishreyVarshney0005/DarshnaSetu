@@ -12,12 +12,7 @@
     },
     "backend": {
       "root": "backend",
-      "entrypoint": "server.js",
-      "functions": {
-        "server.js": {
-          "includeFiles": "**/*.sql"
-        }
-      }
+      "entrypoint": "server.js"
     }
   },
   "rewrites": [
