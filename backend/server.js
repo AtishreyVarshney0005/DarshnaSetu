@@ -66,7 +66,7 @@ app.use(async (req, res, next) => {
     && req.body?.mobile === '9876543210'
     && req.body?.password === 'password123';
 
-  if (req.path === '/api/health' || isDemoLogin) return next();
+  if (req.path === '/api/health' || req.path === '/api/health/database' || isDemoLogin) return next();
 
   try {
     await initializeDatabase();
@@ -88,6 +88,23 @@ app.get('/api/health', (req, res) => {
     message: 'DarshanSetu Backend is running',
     timestamp: new Date()
   });
+});
+
+app.get('/api/health/database', async (req, res) => {
+  try {
+    await initializeDatabase();
+    const [rows] = await pool.query(
+      "SELECT COUNT(*)::int AS table_count FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE'"
+    );
+    return res.status(200).json({ success: true, tableCount: rows[0].table_count });
+  } catch (error) {
+    console.error('Database readiness check failed:', error.message);
+    return res.status(503).json({
+      success: false,
+      stage: 'database_initialization',
+      code: error.code || error.name || 'DATABASE_ERROR'
+    });
+  }
 });
 
 app.use((req, res) => {
