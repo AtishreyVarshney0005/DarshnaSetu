@@ -11,6 +11,9 @@ const { Pool } = pg;
 const connectionString = process.env.DATABASE_URL
   || process.env.DATABASE_POSTGRES_URL
   || process.env.DATABASE_POSTGRES_URL_NON_POOLING;
+const migrationConnectionString = process.env.DATABASE_URL_UNPOOLED
+  || process.env.DATABASE_POSTGRES_URL_NON_POOLING
+  || connectionString;
 
 const pool = new Pool({
   ...(connectionString ? { connectionString } : {
@@ -139,7 +142,14 @@ let initializationPromise;
 export const initializeDatabase = () => {
   if (!initializationPromise) {
     initializationPromise = (async () => {
-      const client = await pool.connect();
+      const client = migrationConnectionString
+        ? new pg.Client({
+            connectionString: migrationConnectionString,
+            ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+            connectionTimeoutMillis: 20000
+          })
+        : await pool.connect();
+      if (migrationConnectionString) await client.connect();
       try {
         await client.query('BEGIN');
         await client.query('SELECT pg_advisory_xact_lock(117979989)');
