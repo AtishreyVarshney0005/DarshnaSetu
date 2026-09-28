@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { login, saveSession } from '../api/client';
 import '../styles/login.css';
 import darshanSetuLogo from '../../assets/DarshanSetu_Logo.png';
 
-const initialForm = { mobile: '9876543210', password: 'password123' };
+const initialForm = { mobile: '', password: '' };
 
 const validateMobile = (mobile) => {
   if (!mobile?.trim()) return 'Mobile number is required';
@@ -81,7 +81,8 @@ export default function Login() {
       const response = await login(normalizedMobile, form.password);
       saveSession(response.data);
       setStatus({ type: 'success', message: 'Login successful. Redirecting to DarshanSetu...' });
-      window.setTimeout(() => navigate('/admin/dashboard', { replace: true }), 300);
+      const destination = response.data.role === 'admin' ? '/admin/dashboard' : '/booking';
+      window.setTimeout(() => navigate(destination, { replace: true }), 300);
     } catch (requestError) {
       setStatus({ type: 'error', message: requestError.message || 'Invalid mobile number or password' });
     } finally {
@@ -109,10 +110,6 @@ export default function Login() {
             <h1 id="login-title">Welcome Back!</h1>
             <p>Login to continue your divine journey</p>
           </div>
-
-          <p className="login-credentials" role="note">
-            Demo login: <strong>9876543210</strong> &middot; Password: <strong>password123</strong>
-          </p>
 
           <form onSubmit={handleSubmit} noValidate>
             <div className="field-group">
@@ -172,6 +169,8 @@ export default function Login() {
               {loading ? 'Logging in...' : 'Login →'}
             </button>
           </form>
+
+          <p className="auth-footer">New to DarshanSetu? <Link to="/signup">Create an account</Link></p>
         </div>
 
         <div className="auth-features" aria-label="DarshanSetu benefits">

@@ -14,6 +14,7 @@ import Notifications from "./pages/Notifications";
 import SmartParking from "./pages/SmartParking";
 import Placeholder from "./pages/Placeholder";
 import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 import AdminSection from "./pages/AdminSection";
 
 function LoadingScreen() {
@@ -61,20 +62,22 @@ function RequireAuth({ children }) {
 
 function RedirectIfAuthenticated({ children }) {
   const { isChecking, isAuthenticated } = useAuthStatus();
+  const user = getStoredUser();
 
   if (isChecking) return <LoadingScreen />;
 
   return isAuthenticated
-    ? <Navigate to="/admin/dashboard" replace />
+    ? <Navigate to={user?.role === "admin" ? "/admin/dashboard" : "/booking"} replace />
     : children;
 }
 
 function AuthenticatedEntry() {
   const { isChecking, isAuthenticated } = useAuthStatus();
+  const user = getStoredUser();
 
   if (isChecking) return <LoadingScreen />;
   if (!isAuthenticated) return <Navigate to="/login" replace />;
-  return <Admin />;
+  return user?.role === "admin" ? <Admin /> : <Navigate to="/booking" replace />;
 }
 
 function RequireAdmin({ children }) {
@@ -127,7 +130,7 @@ export default function App() {
         <Route path="/live-crowd" element={<RequireAuth><CrowdMap /></RequireAuth>} />
         <Route path="/virtual-darshan" element={<RequireAuth><Placeholder title="Virtual Darshan" /></RequireAuth>} />
         <Route path="/services" element={<RequireAuth><Placeholder title="Services" /></RequireAuth>} />
-        <Route path="/signup" element={<Navigate to="/login" replace />} />
+        <Route path="/signup" element={<RedirectIfAuthenticated><Signup /></RedirectIfAuthenticated>} />
         <Route path="/login" element={<RedirectIfAuthenticated><Login /></RedirectIfAuthenticated>} />
         <Route path="/emergency" element={<RequireAuth><EmergencySos /></RequireAuth>} />
         <Route path="/parking" element={<RequireAuth><SmartParking /></RequireAuth>} />

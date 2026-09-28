@@ -1,3 +1,40 @@
+html,
+body,
+#root {
+    width: 100%;
+    min-height: 100%;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+img,
+svg,
+video,
+canvas {
+    display: block;
+    max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+* {
+    box-sizing: border-box;
+}
+
 @media (max-width: 1050px) {
 
     .nav-links {
@@ -113,6 +150,34 @@
 }
 
 @media (max-width: 600px) {
+
+    html,
+    body,
+    #root {
+        min-height: 100%;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    .auth-shell,
+    .booking-main,
+    .admin-redesign-header,
+    .admin-page-heading,
+    .admin-kpi-grid,
+    .admin-analytics-grid,
+    .admin-bottom-grid {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .booking-topbar,
+    .booking-main,
+    .admin-redesign-main {
+        width: 100%;
+        max-width: 100%;
+    }
 
     .nav-container {
         width: 92%;

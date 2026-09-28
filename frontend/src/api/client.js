@@ -1,4 +1,7 @@
-const API_BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace(/\/$/, '');
+const configuredApiUrl = import.meta.env.VITE_API_URL?.trim().replace(/\/+$/, '');
+const API_BASE_URL = configuredApiUrl
+  ? (configuredApiUrl.endsWith('/api') ? configuredApiUrl : `${configuredApiUrl}/api`)
+  : import.meta.env.PROD ? '/api' : 'http://localhost:5000/api';
 
 export const getToken = () => localStorage.getItem('darshansetu_token');
 
@@ -53,6 +56,11 @@ export const request = async (path, options = {}) => {
 export const login = (mobile, password) => request('/auth/login', {
   method: 'POST',
   body: JSON.stringify({ mobile, password })
+});
+
+export const signup = (details) => request('/auth/signup', {
+  method: 'POST',
+  body: JSON.stringify(details)
 });
 
 export const getCurrentUser = () => request('/auth/me');

@@ -105,3 +105,69 @@
 	.admin-redesign-header, .admin-page-heading { padding-right: 28px; padding-left: 28px; }
 	.admin-kpi-grid, .admin-analytics-grid, .admin-bottom-grid { padding-right: 28px; padding-left: 28px; }
 }
+
+@media (max-width: 700px) {
+	.admin-redesign-sidebar {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		align-items: center;
+		gap: 10px 12px;
+		width: 100%;
+		min-height: 0;
+		padding: 12px 14px 10px;
+	}
+
+	.admin-redesign-brand {
+		min-width: 0;
+		padding: 0;
+		font-size: 16px;
+	}
+
+	.admin-redesign-brand img {
+		width: 42px;
+		height: 34px;
+	}
+
+	.admin-redesign-profile {
+		display: none;
+	}
+
+	.admin-redesign-nav {
+		grid-column: 1 / -1;
+		width: 100%;
+		gap: 5px;
+		overflow-x: auto;
+		overflow-y: hidden;
+		padding-bottom: 2px;
+		scrollbar-width: none;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	.admin-redesign-nav::-webkit-scrollbar {
+		display: none;
+	}
+
+	.admin-nav-item {
+		flex: 0 0 auto;
+		min-height: 38px;
+		border-radius: 6px;
+		padding: 8px 10px;
+		font-size: 12px;
+		white-space: nowrap;
+	}
+
+	.admin-nav-item.active {
+		box-shadow: inset 0 -2px #f1c15f;
+	}
+
+	.admin-redesign-logout {
+		grid-column: 2;
+		grid-row: 1;
+		min-height: 36px;
+		margin: 0;
+		border: 1px solid rgba(255, 255, 255, .25);
+		border-radius: 6px;
+		padding: 7px 9px;
+		white-space: nowrap;
+	}
+}

@@ -82,6 +82,8 @@ const normalizeResult = (result, sql = '') => {
   }, result.fields || []];
 };
 
+const resultRows = (result) => Array.isArray(result) ? result[0] || [] : result?.rows || [];
+
 const originalPoolQuery = pool.query.bind(pool);
 pool.query = async (sql, params = []) => {
   const { sql: normalizedSql, params: normalizedParams } = normalizeSql(sql, params);
@@ -148,14 +150,20 @@ export const initializeDatabase = () => {
             ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
             connectionTimeoutMillis: 20000
           })
-        : await pool.connect();
+        : await originalPoolConnect();
       if (migrationConnectionString) await client.connect();
       try {
         await client.query('BEGIN');
         await client.query('SELECT pg_advisory_xact_lock(117979989)');
 
         const schemaState = await client.query("SELECT to_regclass('public.users') AS users");
-        if (!schemaState.rows[0]?.users) {
+        if (!resultRows(schemaState)[0]?.users) {
+          await client.query(schema);
+        }
+
+        const tablesState = await client.query("SELECT to_regclass('public.temples') AS temples, to_regclass('public.darshan_types') AS darshan_types");
+        const tableRows = resultRows(tablesState);
+        if (!tableRows[0]?.temples || !tableRows[0]?.darshan_types) {
           await client.query(schema);
         }
 
@@ -173,6 +181,7 @@ export const initializeDatabase = () => {
 
       await ensureStaffSchema();
       await ensureDefaultAdmin();
+      await ensureCoreTempleSeed();
     })().catch(error => {
       initializationPromise = undefined;
       throw error;
@@ -180,6 +189,57 @@ export const initializeDatabase = () => {
   }
 
   return initializationPromise;
+};
+
+export const ensureCoreTempleSeed = async () => {
+  const client = await originalPoolConnect();
+  try {
+    const templeCount = await client.query('SELECT COUNT(*)::int AS count FROM temples');
+    const templeRows = resultRows(templeCount);
+
+    if ((templeRows[0]?.count ?? 0) > 0) {
+      return;
+    }
+
+    await client.query(`INSERT INTO temples (name, location, capacity, description)
+      VALUES
+        ('Banke Bihari Temple', 'Vrindavan', 10000, 'Ancient temple dedicated to Lord Krishna'),
+        ('Dauji Temple', 'Baldeo', 8000, 'Shiva temple with historical significance'),
+        ('Dwarkadhish Temple', 'Mathura', 12000, 'Grand temple of Lord Krishna'),
+        ('Giriraj Ji Temple', 'Govardhan', 6000, 'Sacred mountain temple'),
+        ('Prem Mandir', 'Vrindavan', 9000, 'Modern architectural marvel'),
+        ('Radha Rani Temple', 'Barsana', 7000, 'Devotion to Radha Ji'),
+        ('Shri Krishna Janmabhoomi', 'Mathura', 15000, 'Birthplace of Lord Krishna')
+      ON CONFLICT (name) DO NOTHING`);
+
+    await client.query(`INSERT INTO darshan_types (temple_id, name, description, price, duration_minutes)
+      SELECT t.id, values.name, values.description, values.price, values.duration_minutes
+      FROM temples t
+      CROSS JOIN (VALUES
+        ('Regular Darshan', 'Standard darshan experience', 0, 30),
+        ('VIP Darshan', 'Priority access with less waiting', 500, 30),
+        ('Special Pooja Darshan', 'Includes special prayers', 1000, 45)
+      ) AS values(name, description, price, duration_minutes)
+      WHERE NOT EXISTS (SELECT 1 FROM darshan_types d WHERE d.temple_id = t.id AND d.name = values.name)`);
+
+    await client.query(`INSERT INTO gates (temple_id, name, capacity, current_crowd, risk_level)
+      SELECT t.id, values.name, values.capacity, values.current_crowd, values.risk_level
+      FROM temples t
+      CROSS JOIN (VALUES
+        ('Gate A', 2000, 0, 'safe'),
+        ('Gate B', 1800, 0, 'safe'),
+        ('Gate C', 2000, 0, 'safe'),
+        ('Gate D', 2200, 0, 'safe')
+      ) AS values(name, capacity, current_crowd, risk_level)
+      WHERE NOT EXISTS (SELECT 1 FROM gates g WHERE g.temple_id = t.id AND g.name = values.name)`);
+
+    await client.query(`INSERT INTO parking (temple_id, name, capacity, occupied, available, occupancy_percentage)
+      SELECT t.id, 'Parking A', 500, 0, 500, 0
+      FROM temples t
+      WHERE NOT EXISTS (SELECT 1 FROM parking p WHERE p.temple_id = t.id AND p.name = 'Parking A')`);
+  } finally {
+    client.release();
+  }
 };
 
 export const ensureStaffSchema = async () => {

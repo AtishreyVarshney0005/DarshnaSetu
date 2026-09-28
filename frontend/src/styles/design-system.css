@@ -415,3 +415,157 @@
     gap: 14px;
   }
 }
+
+@media (max-width: 700px) {
+  .booking-app .booking-sidebar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px 12px;
+    padding: 12px 14px 10px;
+  }
+
+  .booking-app .booking-brand {
+    min-width: 0;
+    padding: 0;
+    font-size: 16px;
+  }
+
+  .booking-app .booking-logo {
+    width: 40px;
+    height: 32px;
+  }
+
+  .booking-app .booking-nav {
+    grid-column: 1 / -1;
+    width: 100%;
+    gap: 5px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .booking-app .booking-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .booking-app .booking-nav button,
+  .booking-app .booking-nav a {
+    flex: 0 0 auto;
+    min-height: 38px;
+    width: auto;
+    padding: 8px 10px;
+    white-space: nowrap;
+  }
+
+  .booking-app .booking-nav span {
+    display: inline;
+  }
+
+  .booking-app .sidebar-blessing {
+    display: none;
+  }
+
+  .booking-app .sidebar-logout {
+    grid-column: 2;
+    grid-row: 1;
+    width: auto;
+    min-height: 36px;
+    margin: 0;
+    border: 1px solid rgba(255, 255, 255, .25);
+    border-radius: 6px;
+    padding: 7px 9px;
+    white-space: nowrap;
+  }
+
+  .booking-app .booking-main {
+    padding: 18px 14px 35px;
+  }
+
+  .booking-app .booking-topbar {
+    align-items: flex-start;
+    gap: 10px;
+    padding: 0 0 16px;
+  }
+
+  .booking-app .booking-topbar h1 {
+    font-size: 21px;
+    line-height: 1.2;
+  }
+
+  .booking-app .booking-topbar h1::after {
+    max-width: 260px;
+    line-height: 1.4;
+  }
+
+  .booking-app .topbar-actions {
+    flex: 0 0 auto;
+    gap: 8px;
+  }
+
+  .booking-app .selected-temple {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .booking-app .selected-temple button {
+    min-height: 40px;
+  }
+
+  .booking-app .section-title,
+  .booking-app .slot-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .booking-app .date-window {
+    font-size: 10px;
+  }
+
+  .booking-app .slot-panel,
+  .booking-app .details-panel,
+  .booking-app .temple-info,
+  .booking-app .summary-panel {
+    min-width: 0;
+    padding: 16px;
+  }
+
+  .booking-app .details-actions {
+    flex-wrap: wrap;
+  }
+
+  .booking-app .details-actions > button {
+    flex: 1 1 140px;
+  }
+}
+
+@media (max-width: 380px) {
+  .booking-app .booking-sidebar {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  .booking-app .booking-nav button,
+  .booking-app .booking-nav a {
+    gap: 7px;
+    padding-right: 8px;
+    padding-left: 8px;
+    font-size: 11px;
+  }
+
+  .booking-app .slot-options {
+    grid-template-columns: 1fr;
+  }
+
+  .booking-app .date-strip {
+    gap: 3px;
+  }
+
+  .booking-app .date-strip button {
+    padding: 8px 2px;
+    font-size: 10px;
+  }
+}
