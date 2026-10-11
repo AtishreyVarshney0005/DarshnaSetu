@@ -91,8 +91,10 @@ app.get('/api/health', (req, res) => {
 });
 
 app.get('/api/health/database', async (req, res) => {
+  let client;
   try {
-    await pool.query('SELECT 1');
+    client = await pool.connect();
+    await client.query('SELECT 1');
     return res.status(200).json({ success: true, database: 'connected' });
   } catch (error) {
     console.error('Database readiness check failed:', error.message);
@@ -108,6 +110,8 @@ app.get('/api/health/database', async (req, res) => {
       code: error.code || error.name || 'DATABASE_ERROR',
       detail: detail.slice(0, 180)
     });
+  } finally {
+    client?.release();
   }
 });
 
