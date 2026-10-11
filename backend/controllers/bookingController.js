@@ -34,6 +34,17 @@ const FALLBACK_GATE_CONFIG = [
   { id: 4, name: 'Gate D', capacity: 2200, current_crowd: 950, risk_level: 'moderate' }
 ];
 
+const BOOKING_TIME_SLOTS = [
+  ['04:00:00', '05:00:00'],
+  ['05:00:00', '06:00:00'],
+  ['06:00:00', '07:00:00'],
+  ['07:00:00', '08:00:00'],
+  ['16:00:00', '17:00:00'],
+  ['17:00:00', '18:00:00'],
+  ['18:00:00', '19:00:00'],
+  ['19:00:00', '20:00:00']
+];
+
 const getFallbackTempleById = (templeId) => {
   const normalizedId = Number(templeId);
   const temple = FALLBACK_TEMPLE_CATALOG.find((item) => Number(item.id) === normalizedId);
@@ -48,15 +59,14 @@ const getFallbackTempleById = (templeId) => {
 
 const getFallbackTimeSlots = (templeId, date) => {
   const normalizedTempleId = Number(templeId);
-  const startTimes = ['06:00:00', '07:00:00', '08:00:00', '16:00:00', '17:00:00', '18:00:00'];
   const capacity = normalizedTempleId % 2 === 0 ? 1200 : 1000;
 
-  return startTimes.map((start_time, index) => ({
+  return BOOKING_TIME_SLOTS.map(([start_time, end_time], index) => ({
     id: index + 1,
     temple_id: normalizedTempleId,
     date,
     start_time,
-    end_time: index < 2 ? '07:00:00' : index < 3 ? '17:00:00' : index < 4 ? '18:00:00' : '19:00:00',
+    end_time,
     capacity,
     booked: index === 0 ? 200 : index === 1 ? 420 : index === 2 ? 580 : index === 3 ? 350 : index === 4 ? 460 : 510,
     status: 'available',
@@ -80,11 +90,10 @@ const ensureSlotsForDate = async (connection, templeId, date) => {
   const [temples] = await connection.query('SELECT capacity FROM temples WHERE id = ?', [normalizedTempleId]);
   if (!temples.length) return false;
   const capacity = Math.max(100, Math.floor(temples[0].capacity / 10));
-  const defaultSlots = [['06:00:00', '07:00:00'], ['07:00:00', '08:00:00'], ['08:00:00', '09:00:00'], ['16:00:00', '17:00:00'], ['17:00:00', '18:00:00'], ['18:00:00', '19:00:00']];
   await connection.query(
     `INSERT IGNORE INTO time_slots (temple_id, date, start_time, end_time, capacity, booked, status)
-     VALUES ${defaultSlots.map(() => '(?, ?, ?, ?, ?, 0, \'available\')').join(', ')}`,
-    defaultSlots.flatMap(([start, end]) => [normalizedTempleId, date, start, end, capacity])
+     VALUES ${BOOKING_TIME_SLOTS.map(() => '(?, ?, ?, ?, ?, 0, \'available\')').join(', ')}`,
+    BOOKING_TIME_SLOTS.flatMap(([start, end]) => [normalizedTempleId, date, start, end, capacity])
   );
   return true;
 };
@@ -155,8 +164,9 @@ export const getTimeSlots = async (req, res) => {
     const [slots] = await connection.query(
       `SELECT id, temple_id, TO_CHAR(date, 'YYYY-MM-DD') AS date, start_time, end_time,
               capacity, booked, status, created_at
-       FROM time_slots WHERE temple_id = ? AND date = ? ORDER BY start_time`,
-      [templeId, date]
+       FROM time_slots WHERE temple_id = ? AND date = ? AND start_time IN (${BOOKING_TIME_SLOTS.map(() => '?').join(', ')})
+       ORDER BY start_time`,
+      [templeId, date, ...BOOKING_TIME_SLOTS.map(([start]) => start)]
     );
 
     await connection.release();
@@ -256,7 +266,7 @@ export const createBooking = async (req, res) => {
       [timeSlotId, templeId, date]
     );
 
-    if (slots.length === 0) {
+    if (slots.length === 0 || !BOOKING_TIME_SLOTS.some(([start, end]) => start === slots[0].start_time && end === slots[0].end_time)) {
       await connection.rollback();
       transactionStarted = false;
       return errorResponse(res, 404, 'Time slot not found');
@@ -365,16 +375,23 @@ export const createBooking = async (req, res) => {
 
     return successResponse(res, 201, 'Booking created successfully', {
       bookingId,
+      booking_id: bookingId,
       templeId,
       temple: temple.name,
       numberOfVisitors,
+      number_of_visitors: numberOfVisitors,
       gateAssignment,
+      gate_assignment: gateAssignment,
       date,
       time: `${slot.start_time} - ${slot.end_time}`,
       darshanType: darshanTypes[0].name,
+      darshan_type: darshanTypes[0].name,
       estimatedWaitTime: `${waitTime} minutes`,
+      estimated_wait_time: `${waitTime} minutes`,
       qrCode,
-      qrToken
+      qr_code: qrCode,
+      qrToken,
+      qr_token: qrToken
     });
   } catch (error) {
     return errorResponse(res, 500, 'Failed to create booking', error);

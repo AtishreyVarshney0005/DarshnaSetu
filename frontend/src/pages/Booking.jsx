@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { clearSession, createBooking, getTempleDetails, getTemples, getTimeSlots } from '../api/client';
+import { clearSession, createBooking, getBookingQr, getTempleDetails, getTemples, getTimeSlots } from '../api/client';
 import heroTempleImage from '../../assets/hero_temple.png';
 import templeIllustration from '../../assets/temple_illustration.png';
 import '../styles/premium_booking.css';
@@ -12,7 +12,13 @@ const today = toIndiaDate(new Date());
 const addDays = (value, days) => { const [year, month, day] = value.split('-').map(Number); return new Date(Date.UTC(year, month - 1, day + days)).toISOString().slice(0, 10); };
 const displayDate = (value) => new Intl.DateTimeFormat('en-IN', { weekday: 'short', day: '2-digit', month: 'short', timeZone: 'UTC' }).format(new Date(`${value}T00:00:00Z`));
 const longDate = (value) => new Intl.DateTimeFormat('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${value}T00:00:00Z`));
-const displayTime = (value) => value ? value.slice(0, 5) : '';
+const displayTime = (value) => {
+  if (!value) return '';
+  const [hours, minutes] = value.slice(0, 5).split(':').map(Number);
+  if (!Number.isFinite(hours) || !Number.isFinite(minutes)) return value;
+  return `${hours % 12 || 12}:${String(minutes).padStart(2, '0')} ${hours >= 12 ? 'PM' : 'AM'}`;
+};
+const displayTimeRange = (value) => value ? value.split(' - ').map(displayTime).join(' - ') : '';
 const fallbackTempleImages = [heroTempleImage, templeIllustration];
 const bundledTempleImages = {
   'hero_temple.png': heroTempleImage,
@@ -64,7 +70,48 @@ export default function Booking() {
   const selectedDarshan = templeDetails?.darshanTypes?.find((item) => String(item.id) === darshanTypeId);
   const chooseTemple = (temple) => { setSelectedTemple(temple); setTempleDetails(null); setStage(1); setError(''); };
   const reset = () => { setStage(0); setSelectedTemple(null); setTempleDetails(null); setSuccess(null); setError(''); };
-  const submitBooking = async () => { setSubmitting(true); setError(''); try { const response = await createBooking({ templeId: Number(selectedTemple.id), darshanTypeId: Number(darshanTypeId), timeSlotId: selectedSlot.id, numberOfVisitors: Number(devotees), date }); setSuccess(response.data); setStage(3); } catch (e) { setError(e.message); } finally { setSubmitting(false); } };
+  const submitBooking = async () => {
+    if (!selectedTemple || !selectedSlot || !darshanTypeId) {
+      setError('Select a temple, darshan type, and time slot before continuing.');
+      return;
+    }
+    if (!devotee.name.trim() || devotee.mobile.replace(/\D/g, '').length !== 10) {
+      setError('Enter your name and a valid 10-digit mobile number to continue.');
+      return;
+    }
+
+    setSubmitting(true);
+    setError('');
+    try {
+      const response = await createBooking({
+        templeId: Number(selectedTemple.id),
+        darshanTypeId: Number(darshanTypeId),
+        timeSlotId: selectedSlot.id,
+        numberOfVisitors: Number(devotees),
+        date
+      });
+
+      const bookingData = response?.data || response || {};
+      let qrCode = bookingData.qrCode || bookingData.qr_code || bookingData.qr || '';
+
+      if (!qrCode && bookingData.bookingId) {
+        const qrResponse = await getBookingQr(bookingData.bookingId);
+        qrCode = qrResponse?.data?.qr_code || qrResponse?.data?.qrCode || '';
+      }
+
+      setSuccess({
+        ...bookingData,
+        bookingId: bookingData.bookingId || bookingData.booking_id,
+        qrCode,
+        qr_code: qrCode
+      });
+      setStage(3);
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
   const updateDevotee = (name, value) => setDevotee((current) => ({ ...current, [name]: value }));
 
   return <div className="booking-app"><Sidebar setStage={setStage} reset={reset} /><main className="booking-main"><header className="booking-topbar"><div><span className="topbar-label">DARSHANSETU / BOOKING</span><h1>Darshan Booking</h1></div><div className="topbar-actions"><select className="booking-temple-selector" aria-label="Select temple"><option>Banke Bihari Temple, Vrindavan</option><option>Dauji Temple, Baldeo</option><option>Dwarkadhish Temple, Mathura</option></select><span className="secure-note">♢ Secure &amp; verified</span><a href="/my-queue" className="avatar-link">A</a></div></header>
@@ -78,5 +125,8 @@ function TempleSelection({ temples, maxDate, chooseTemple }) { return <section c
 
 function BookingFlow(props) { const { stage, selectedTemple, templeDetails, date, setDate, today, maxDate, slots, selectedSlot, setSelectedSlot, darshanTypeId, setDarshanTypeId, selectedDarshan, devotees, setDevotees, devotee, updateDevotee, loading, error, setStage, reset, submitting, submitBooking } = props; return <section className="booking-flow"><div className="selected-temple"><div><span className="eyebrow">YOUR TEMPLE</span><h2>{selectedTemple.name}</h2><p>⌖ {selectedTemple.location}</p></div><button type="button" onClick={reset}>Change temple</button></div><Progress stage={stage} />{stage === 1 ? <SlotStep {...props} /> : <DetailsStep {...{ selectedTemple, templeDetails, date, selectedSlot, selectedDarshan, devotees, setStage, devotee, updateDevotee, submitting, submitBooking, error }} />}</section>; }
 function SlotStep({ selectedTemple, templeDetails, date, setDate, today, maxDate, slots, selectedSlot, setSelectedSlot, darshanTypeId, setDarshanTypeId, selectedDarshan, devotees, setDevotees, loading, error, setStage }) { return <div className="booking-columns"><div className="slot-panel"><div className="section-title"><div><span className="eyebrow">STEP 1</span><h2>Select date & time slot</h2></div><span className="date-window">{today} → {maxDate}</span></div><div className="date-strip">{Array.from({ length: 7 }, (_, index) => { const item = addDays(today, index); return <button type="button" className={date === item ? 'selected' : ''} key={item} onClick={() => setDate(item)}><small>{index === 0 ? 'Today' : displayDate(item).split(' ')[0]}</small><strong>{displayDate(item).split(' ')[1]}</strong><span>{displayDate(item).split(' ')[2]}</span></button>; })}</div><div className="slot-heading"><h3>Available time slots</h3><span>Live availability</span></div>{error && <p className="flow-error">{error}</p>}{loading ? <p className="flow-state">Checking availability...</p> : <div className="slot-options">{slots.map((slot) => { const available = Math.max(0, slot.capacity - slot.booked); const full = slot.status === 'full' || available < devotees; return <button type="button" disabled={full} className={`slot-option ${selectedSlot?.id === slot.id ? 'selected' : ''} ${full ? 'full' : ''}`} key={slot.id} onClick={() => setSelectedSlot(slot)}><span>{displayTime(slot.start_time)} - {displayTime(slot.end_time)}</span><strong>{full ? 'Full' : available > slot.capacity * .5 ? 'Available' : available > slot.capacity * .15 ? 'Moderate' : 'High Demand'}</strong><small>{full ? 'No seats remaining' : `${available} seats remaining`}</small></button>; })}</div>}{selectedDarshan && <div className="darshan-row"><label>Darshan type<select value={darshanTypeId} onChange={(e) => setDarshanTypeId(e.target.value)}>{(templeDetails?.darshanTypes || []).map((item) => <option key={item.id} value={item.id}>{item.name} · {Number(item.price) ? `₹${item.price}` : 'Free'}</option>)}</select></label><label>Devotees<input type="number" min="1" max="20" value={devotees} onChange={(e) => setDevotees(Math.max(1, Math.min(20, Number(e.target.value) || 1)))} /></label></div>}</div><aside className="temple-info"><span className="eyebrow">TEMPLE INFORMATION</span><h3>Plan your arrival</h3><div className="info-stat"><span>Daily capacity</span><strong>{Number(selectedTemple.capacity || 0).toLocaleString('en-IN')}</strong></div><div className="info-stat"><span>Today's bookings</span><strong>6,420</strong></div><div className="crowd-status"><i /> <span>Current crowd<strong>Moderate · 64%</strong></span></div><p className="arrival-note">Please arrive 30 minutes before your slot. Keep a valid ID and your QR pass ready at the entry gate.</p><button type="button" className="primary-cta" disabled={!selectedSlot} onClick={() => setStage(2)}>Continue <b>→</b></button></aside></div>; }
-function DetailsStep({ selectedTemple, date, selectedSlot, selectedDarshan, devotees, setStage, devotee, updateDevotee, submitting, submitBooking, error }) { return <div className="details-layout"><div className="details-panel"><span className="eyebrow">STEP 2</span><h2>Devotee details</h2><p className="panel-copy">A few details help us prepare a smooth visit for your group.</p><div className="form-grid"><label>Full name *<input value={devotee.name} onChange={(e) => updateDevotee('name', e.target.value)} placeholder="Enter your full name" /></label><label>Mobile number *<input value={devotee.mobile} onChange={(e) => updateDevotee('mobile', e.target.value)} placeholder="10-digit mobile number" /></label><label>Email <span className="optional">Optional</span><input value={devotee.email} onChange={(e) => updateDevotee('email', e.target.value)} placeholder="you@example.com" /></label><label>Special seva <span className="optional">Optional</span><select value={devotee.seva} onChange={(e) => updateDevotee('seva', e.target.value)}><option value="">Select seva</option><option>Deep Daan</option><option>Prasad Seva</option><option>Gau Seva</option></select></label><label className="wide">Special request <span className="optional">Optional</span><textarea value={devotee.request} onChange={(e) => updateDevotee('request', e.target.value)} placeholder="Accessibility or arrival notes" /></label></div><div className="details-actions"><button type="button" onClick={() => setStage(1)}>← Back</button><button type="button" className="primary-cta" disabled={!devotee.name.trim() || devotee.mobile.replace(/\D/g, '').length !== 10} onClick={submitBooking}>{submitting ? 'Confirming booking...' : 'Confirm & pay'} <b>→</b></button></div>{error && <p className="flow-error">{error}</p>}</div><aside className="summary-panel"><span className="eyebrow">BOOKING SUMMARY</span><h3>{selectedTemple.name}</h3><p>{selectedTemple.location}</p><dl><div><dt>Selected slot</dt><dd>{longDate(date)}<br />{displayTime(selectedSlot?.start_time)} - {displayTime(selectedSlot?.end_time)}</dd></div><div><dt>Darshan type</dt><dd>{selectedDarshan?.name || 'General Darshan'}</dd></div><div><dt>Devotees</dt><dd>{devotees}</dd></div></dl><div className="summary-total"><span>Total amount</span><strong>₹{Number(selectedDarshan?.price || 0) * devotees}</strong></div><p className="payment-note">Payment is securely processed after confirmation.</p></aside></div>; }
-function Confirmation({ success, selectedTemple, selectedDarshan }) { return <section className="confirmation-view"><div className="confirmation-heading"><span className="success-icon">✓</span><span className="eyebrow">YOUR VISIT IS CONFIRMED</span><h2>Booking confirmed!</h2><p>Your darshan booking is successful. Show this QR at the temple entry.</p></div><div className="pass-card"><div className="pass-details"><span className="pass-kicker">DIGITAL DARSHAN PASS</span><h3>{success.temple}</h3><p>{selectedTemple.location}</p><div className="pass-grid"><span>Booking ID<strong>{success.bookingId}</strong></span><span>Date<strong>{longDate(success.date)}</strong></span><span>Time slot<strong>{success.time}</strong></span><span>Darshan type<strong>{success.darshanType || selectedDarshan?.name}</strong></span><span>Devotees<strong>{success.numberOfVisitors}</strong></span><span>Total amount<strong>₹{Number(selectedDarshan?.price || 0) * success.numberOfVisitors}</strong></span></div></div><div className="qr-side"><span>Your Darshan QR</span><div className="qr-frame"><img src={success.qrCode} alt={`QR pass for ${success.bookingId}`} /></div><small>Present this code at the entry gate</small></div></div><div className="confirmation-actions"><a href={success.qrCode} download={`${success.bookingId}.png`} className="primary-cta">Download QR</a><button type="button" onClick={() => navigator.share?.({ title: 'DarshanSetu booking', text: success.bookingId })}>Share booking</button><a href="/my-queue">View my bookings</a></div></section>; }
+function DetailsStep({ selectedTemple, date, selectedSlot, selectedDarshan, devotees, setStage, devotee, updateDevotee, submitting, submitBooking, error }) { return <div className="details-layout"><div className="details-panel"><span className="eyebrow">STEP 2</span><h2>Devotee details</h2><p className="panel-copy">A few details help us prepare a smooth visit for your group.</p><div className="form-grid"><label>Full name *<input value={devotee.name} onChange={(e) => updateDevotee('name', e.target.value)} placeholder="Enter your full name" /></label><label>Mobile number *<input value={devotee.mobile} onChange={(e) => updateDevotee('mobile', e.target.value)} placeholder="10-digit mobile number" /></label><label>Email <span className="optional">Optional</span><input value={devotee.email} onChange={(e) => updateDevotee('email', e.target.value)} placeholder="you@example.com" /></label><label>Special seva <span className="optional">Optional</span><select value={devotee.seva} onChange={(e) => updateDevotee('seva', e.target.value)}><option value="">Select seva</option><option>Deep Daan</option><option>Prasad Seva</option><option>Gau Seva</option></select></label><label className="wide">Special request <span className="optional">Optional</span><textarea value={devotee.request} onChange={(e) => updateDevotee('request', e.target.value)} placeholder="Accessibility or arrival notes" /></label></div><div className="details-actions"><button type="button" onClick={() => setStage(1)}>← Back</button><button type="button" className="primary-cta" onClick={submitBooking}>{submitting ? 'Confirming booking...' : 'Confirm & pay'} <b>→</b></button></div>{error && <p className="flow-error">{error}</p>}</div><aside className="summary-panel"><span className="eyebrow">BOOKING SUMMARY</span><h3>{selectedTemple.name}</h3><p>{selectedTemple.location}</p><dl><div><dt>Selected slot</dt><dd>{longDate(date)}<br />{displayTime(selectedSlot?.start_time)} - {displayTime(selectedSlot?.end_time)}</dd></div><div><dt>Darshan type</dt><dd>{selectedDarshan?.name || 'General Darshan'}</dd></div><div><dt>Devotees</dt><dd>{devotees}</dd></div></dl><div className="summary-total"><span>Total amount</span><strong>₹{Number(selectedDarshan?.price || 0) * devotees}</strong></div><p className="payment-note">Payment is securely processed after confirmation.</p></aside></div>; }
+function Confirmation({ success, selectedTemple, selectedDarshan }) {
+  const qrImage = success?.qrCode || success?.qr_code || '';
+  return <section className="confirmation-view"><div className="confirmation-heading"><span className="success-icon">✓</span><span className="eyebrow">YOUR VISIT IS CONFIRMED</span><h2>Booking confirmed!</h2><p>Your darshan booking is successful. Show this QR at the temple entry.</p></div><div className="pass-card"><div className="pass-details"><span className="pass-kicker">DIGITAL DARSHAN PASS</span><h3>{success.temple}</h3><p>{selectedTemple.location}</p><div className="pass-grid"><span>Booking ID<strong>{success.bookingId}</strong></span><span>Date<strong>{longDate(success.date)}</strong></span><span>Time slot<strong>{displayTimeRange(success.time)}</strong></span><span>Darshan type<strong>{success.darshanType || selectedDarshan?.name}</strong></span><span>Devotees<strong>{success.numberOfVisitors}</strong></span><span>Total amount<strong>₹{Number(selectedDarshan?.price || 0) * success.numberOfVisitors}</strong></span></div></div><div className="qr-side"><span>Your Darshan QR</span><div className="qr-frame">{qrImage ? <img src={qrImage} alt={`QR pass for ${success.bookingId}`} /> : <p className="flow-error">QR is still being generated. Please refresh or check My Bookings.</p>}</div><small>Present this code at the entry gate</small></div></div><div className="confirmation-actions"><a href={qrImage || '#'} download={`${success.bookingId}.png`} className="primary-cta" onClick={(event) => !qrImage && event.preventDefault()}>Download QR</a><button type="button" onClick={() => navigator.share?.({ title: 'DarshanSetu booking', text: success.bookingId })}>Share booking</button><a href="/my-queue">View my bookings</a></div></section>;
+}

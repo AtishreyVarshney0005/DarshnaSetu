@@ -8,7 +8,20 @@ import darshanSetuLogo from '../../assets/DarshanSetu_Logo.png';
 
 const formatDate = (date) => date ? new Intl.DateTimeFormat('en-IN', { day: '2-digit', month: 'short', year: 'numeric', weekday: 'long', timeZone: 'UTC' }).format(new Date(`${date}T00:00:00Z`)) : 'Date unavailable';
 const formatTime = (value) => value ? value.slice(0, 5) : 'Time unavailable';
-const normalizeStatus = (status) => String(status || 'pending').toLowerCase();
+const normalizeStatus = (status) => String(status || 'pending').trim().toLowerCase().replace(/[\s-]+/g, '_');
+const getBookingStatus = (booking) => {
+  const status = normalizeStatus(booking.booking_status || booking.bookingStatus || booking.status);
+  if (status === 'canceled') return 'cancelled';
+  if (status === 'complete') return 'completed';
+  return status;
+};
+const getBookingCategory = (booking) => {
+  const status = getBookingStatus(booking);
+  if (status === 'cancelled') return 'cancelled';
+  if (status === 'completed') return 'completed';
+  if (status === 'confirmed' || status === 'pending') return 'upcoming';
+  return 'other';
+};
 
 function StatusBadge({ status }) {
   const normalized = normalizeStatus(status);
@@ -35,9 +48,10 @@ function BookingSkeleton() {
 }
 
 function BookingCard({ booking, onViewQr, onCancel }) {
-  const status = normalizeStatus(booking.booking_status);
+  const status = getBookingStatus(booking);
   const canCancel = status !== 'cancelled' && status !== 'completed';
   return <article className="my-booking-card">
+    {booking.local_demo && <p className="offline-booking-note offline-booking-note--card">Offline demo only — not confirmed by a temple.</p>}
     <div className="booking-card-image"><img src={booking.image_url || '/assets/hero_temple.png'} alt="" /></div>
     <div className="my-booking-main"><div className="booking-card-heading"><div><p className="booking-eyebrow">DARSHAN BOOKING</p><h2>{booking.temple_name}</h2><p className="booking-location">⌖ {booking.location || 'Temple location'}</p></div><StatusBadge status={booking.booking_status} /></div>
       <div className="booking-details-grid"><span><small>Date</small><strong>{formatDate(booking.booking_date)}</strong></span><span><small>Time</small><strong>{formatTime(booking.start_time)} - {formatTime(booking.end_time)}</strong></span><span><small>Devotees</small><strong>{booking.number_of_visitors} {Number(booking.number_of_visitors) === 1 ? 'Devotee' : 'Devotees'}</strong></span><span><small>Booking ID</small><strong>{booking.booking_id}</strong></span><span><small>Darshan Type</small><strong>{booking.darshan_type || 'General Darshan'}</strong></span></div>
@@ -65,19 +79,24 @@ export default function MyQueue() {
   const [cancelLoading, setCancelLoading] = useState(false);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
+  const hasLocalDemoBookings = useMemo(() => bookings.some((booking) => booking.local_demo || String(booking.booking_id || '').startsWith('DEMO-')), [bookings]);
 
   const loadBookings = () => { setLoading(true); setError(''); return getMyBookings().then(({ data }) => setBookings(data || [])).catch((requestError) => setError(requestError.message)).finally(() => setLoading(false)); };
   useEffect(() => { loadBookings(); }, []);
 
   const filteredBookings = useMemo(() => bookings.filter((booking) => {
-    const status = normalizeStatus(booking.booking_status);
-    if (filter === 'upcoming') return status === 'confirmed' || status === 'pending';
-    return filter === 'all' || status === filter;
+    return filter === 'all' || getBookingCategory(booking) === filter;
   }), [bookings, filter]);
 
   const viewQr = async (booking) => { setError(''); try { const response = await getBookingQr(booking.booking_id); setSelected({ ...booking, ...response.data }); } catch (requestError) { setError(requestError.message); } };
-  const cancelBooking = async () => { setCancelLoading(true); try { await request(`/bookings/${encodeURIComponent(cancelTarget.booking_id)}/cancel`, { method: 'POST' }); setCancelTarget(null); setNotice('Booking cancelled successfully.'); await loadBookings(); } catch (requestError) { setError(requestError.message); } finally { setCancelLoading(false); } };
+  const cancelBooking = async () => { setCancelLoading(true); try { await request(`/bookings/${encodeURIComponent(cancelTarget.booking_id)}/cancel`, { method: 'POST' }); setBookings((current) => current.map((booking) => booking.booking_id === cancelTarget.booking_id ? { ...booking, booking_status: 'cancelled' } : booking)); setCancelTarget(null); setNotice('Booking cancelled successfully.'); await loadBookings(); } catch (requestError) { setError(requestError.message); } finally { setCancelLoading(false); } };
 
   const tabs = [['all', '▤', 'All Bookings'], ['upcoming', '◷', 'Upcoming'], ['completed', '✓', 'Completed'], ['cancelled', '×', 'Cancelled']];
-  return <div className="my-bookings-app"><Sidebar /><main className="my-bookings-content"><header className="my-bookings-header"><div><p className="booking-eyebrow">YOUR TEMPLE VISITS</p><h1>My Bookings</h1><p>View and manage all your darshan bookings</p></div><div className="my-bookings-user"><button type="button" aria-label="Notifications">♧<b>2</b></button><span className="user-avatar">A</span><span className="user-name">Devotee</span></div></header>{notice && <div className="booking-notice" role="status">✓ {notice}<button type="button" onClick={() => setNotice('')} aria-label="Dismiss notification">×</button></div>}{error && <div className="booking-error" role="alert">{error}<button type="button" onClick={loadBookings}>Retry</button></div>}<div className="booking-tabs" role="tablist" aria-label="Filter bookings">{tabs.map(([value, icon, label]) => <button type="button" role="tab" aria-selected={filter === value} className={filter === value ? 'active' : ''} key={value} onClick={() => setFilter(value)}><span aria-hidden="true">{icon}</span>{label}<b>{value === 'all' ? bookings.length : bookings.filter((booking) => value === 'upcoming' ? ['confirmed', 'pending'].includes(normalizeStatus(booking.booking_status)) : normalizeStatus(booking.booking_status) === value).length}</b></button>)}</div>{loading ? <BookingSkeleton /> : filteredBookings.length === 0 ? <section className="my-bookings-empty"><div className="empty-icon">◫</div><h2>No bookings found</h2><p>Your upcoming darshan bookings will appear here.</p><button type="button" className="booking-empty-cta" onClick={() => navigate('/darshan-booking')}>Book Darshan <span>→</span></button></section> : <section className="my-bookings-list" aria-live="polite">{filteredBookings.map((booking) => <BookingCard key={booking.booking_id} booking={booking} onViewQr={viewQr} onCancel={setCancelTarget} />)}</section>}{selected && <QrModal booking={selected} onClose={() => setSelected(null)} />}{cancelTarget && <CancelModal booking={cancelTarget} onClose={() => setCancelTarget(null)} onConfirm={cancelBooking} loading={cancelLoading} />}</main></div>;
+  const emptyMessages = {
+    all: ['No bookings found', 'Your darshan bookings will appear here.'],
+    upcoming: ['No upcoming bookings', 'Confirmed and pending darshan bookings will appear here.'],
+    completed: ['No completed bookings', 'Completed darshan visits will appear here.'],
+    cancelled: ['No cancelled bookings', 'Bookings you cancel will appear here.']
+  };
+  return <div className="my-bookings-app"><Sidebar /><main className="my-bookings-content"><header className="my-bookings-header"><div><p className="booking-eyebrow">YOUR TEMPLE VISITS</p><h1>My Bookings</h1><p>View and manage all your darshan bookings</p></div><div className="my-bookings-user"><button type="button" aria-label="Notifications">♧<b>2</b></button><span className="user-avatar">A</span><span className="user-name">Devotee</span></div></header>{notice && <div className="booking-notice" role="status">✓ {notice}<button type="button" onClick={() => setNotice('')} aria-label="Dismiss notification">×</button></div>}{error && <div className="booking-error" role="alert">{error === 'Unable to reach the DarshanSetu server' ? 'Could not connect to the bookings server. Your bookings have not been loaded; please retry when the server is available.' : error}<button type="button" onClick={loadBookings}>Retry</button></div>}<div className="booking-tabs" role="tablist" aria-label="Filter bookings">{tabs.map(([value, icon, label]) => <button type="button" role="tab" aria-selected={filter === value} className={filter === value ? 'active' : ''} key={value} onClick={() => setFilter(value)}><span aria-hidden="true">{icon}</span>{label}<b>{value === 'all' ? bookings.length : bookings.filter((booking) => getBookingCategory(booking) === value).length}</b></button>)}</div>{loading ? <BookingSkeleton /> : error ? null : filteredBookings.length === 0 ? <section className="my-bookings-empty"><div className="empty-icon">◫</div><h2>{emptyMessages[filter][0]}</h2><p>{emptyMessages[filter][1]}</p><button type="button" className="booking-empty-cta" onClick={() => navigate('/darshan-booking')}>Book Darshan <span>→</span></button></section> : <section className="my-bookings-list" aria-live="polite">{filteredBookings.map((booking) => <BookingCard key={booking.booking_id} booking={booking} onViewQr={viewQr} onCancel={setCancelTarget} />)}</section>}{selected && <QrModal booking={selected} onClose={() => setSelected(null)} />}{cancelTarget && <CancelModal booking={cancelTarget} onClose={() => setCancelTarget(null)} onConfirm={cancelBooking} loading={cancelLoading} />}</main></div>;
 }

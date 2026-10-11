@@ -16,13 +16,14 @@ INSERT INTO darshan_types (temple_id, name, description, price, duration_minutes
 (3, 'VIP Darshan', 'VIP priority access', 500, 30);
 
 INSERT INTO time_slots (temple_id, date, start_time, end_time, capacity, booked, status) VALUES
+(1, CURDATE(), '04:00:00', '05:00:00', 1000, 200, 'available'),
+(1, CURDATE(), '05:00:00', '06:00:00', 1000, 680, 'limited'),
 (1, CURDATE(), '06:00:00', '07:00:00', 1000, 650, 'limited'),
 (1, CURDATE(), '07:00:00', '08:00:00', 1000, 820, 'almost_full'),
-(1, CURDATE(), '08:00:00', '09:00:00', 1000, 990, 'full'),
-(1, CURDATE(), '09:00:00', '10:00:00', 1000, 1000, 'full'),
-(1, CURDATE(), '05:00:00', '06:00:00', 1000, 680, 'limited'),
-(1, CURDATE(), '10:00:00', '11:00:00', 1000, 860, 'limited'),
-(1, CURDATE(), '11:00:00', '12:00:00', 1000, 940, 'limited'),
+(1, CURDATE(), '16:00:00', '17:00:00', 1000, 350, 'available'),
+(1, CURDATE(), '17:00:00', '18:00:00', 1000, 460, 'available'),
+(1, CURDATE(), '18:00:00', '19:00:00', 1000, 510, 'available'),
+(1, CURDATE(), '19:00:00', '20:00:00', 1000, 580, 'available'),
 (2, CURDATE(), '06:00:00', '07:00:00', 1000, 400, 'available'),
 (3, CURDATE(), '06:00:00', '07:00:00', 1500, 800, 'limited');
 
