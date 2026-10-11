@@ -26,7 +26,9 @@ const pool = new Pool({
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
   max: 10,
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 20000
+  connectionTimeoutMillis: 20000,
+  statement_timeout: 15000,
+  lock_timeout: 5000
 });
 
 const normalizeSql = (sql, params = []) => {
@@ -148,7 +150,9 @@ export const initializeDatabase = () => {
         ? new pg.Client({
             connectionString: migrationConnectionString,
             ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
-            connectionTimeoutMillis: 20000
+            connectionTimeoutMillis: 20000,
+            statement_timeout: 15000,
+            lock_timeout: 5000
           })
         : await originalPoolConnect();
       if (migrationConnectionString) await client.connect();

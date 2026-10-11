@@ -92,11 +92,8 @@ app.get('/api/health', (req, res) => {
 
 app.get('/api/health/database', async (req, res) => {
   try {
-    await initializeDatabase();
-    const [rows] = await pool.query(
-      "SELECT COUNT(*)::int AS table_count FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE'"
-    );
-    return res.status(200).json({ success: true, tableCount: rows[0].table_count });
+    await pool.query('SELECT 1');
+    return res.status(200).json({ success: true, database: 'connected' });
   } catch (error) {
     console.error('Database readiness check failed:', error.message);
     let detail = String(error.message || '');
