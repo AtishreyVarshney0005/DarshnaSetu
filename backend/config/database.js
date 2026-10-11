@@ -27,6 +27,7 @@ const pool = new Pool({
   max: 10,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 20000,
+  query_timeout: 15000,
   statement_timeout: 15000,
   lock_timeout: 5000
 });
@@ -151,6 +152,7 @@ export const initializeDatabase = () => {
             connectionString: migrationConnectionString,
             ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
             connectionTimeoutMillis: 20000,
+            query_timeout: 15000,
             statement_timeout: 15000,
             lock_timeout: 5000
           })
